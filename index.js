@@ -85,8 +85,11 @@ client.on('ready', () => {
         chien(function(err,image){
             if(err) return msg.reply(err);
 
-            msg.reply("Voici un chien rien que pour vous <3", { file: image})
+            msg.reply("Voici un chien rien que pour vous 💕", { file: image})
         })
+    }
+    if (msg.content === 'chat') {
+        msg.reply('Voici un chat rien que pour vous 😻', {file: 'https://thecatapi.com/api/images/get?format=src'})
     }
     if(msg.content === 'chuck') {
         chuck(function(err,fact){
