@@ -89,7 +89,7 @@ client.on('ready', () => {
         })
     }
     if (msg.content === 'chat') {
-        msg.reply('Voici un chat rien que pour vous 😻', {file: 'https://thecatapi.com/api/images/get?format=src'})
+        msg.reply('Voici un chat rien que pour vous 😻 \n https://lorempixel.com/640/480/cats')
     }
     if(msg.content === 'chuck') {
         chuck(function(err,fact){
