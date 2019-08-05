@@ -5,7 +5,7 @@ const client = new Discord.Client();
 require('dotenv').load();
 const token = process.env.TOKEN_DISCORD;
 var darksky = function(callback){
-	var  url = 'https://api.darksky.net/forecast/1db40f2d4215858a66ed5ae0d02a2bc6/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly';
+	var  url = `https://api.darksky.net/forecast/${process.env.DARKSKY_TOKEN}/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly`;
 
 	request(url, function(err, response, body){
 		try{
