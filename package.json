@@ -1,14 +1,20 @@
 {
-  "name": "botDiscord",
+  "name": "botdiscord",
   "version": "1.0.0",
   "description": "bot pour tester la creation de bot sur discord",
   "main": "index.js",
   "author": "WolfVic",
   "license": "MIT",
+  "scripts": {
+    "start": "node ./index.js"
+  },
   "dependencies": {
-    "discord.js": "^11.3.2",
-    "dotenv": "^6.0.0",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.2.0",
+    "fotology-x": "^1.2.4",
+    "googleapis": "^45.0.0",
     "opusscript": "^0.0.6",
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "snekfetch": "^4.0.4"
   }
 }
