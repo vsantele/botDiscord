@@ -68,34 +68,37 @@ client.on('ready', () => {
   });
   
   client.on('message', msg => {
-    if (msg.content === 'ping') {
+    if (msg.content.toLowerCase() === 'ping') {
       msg.reply('pong');
     }
-    if (msg.content === 'pong') {
+    if (msg.content.toLowerCase() === 'pong') {
         msg.reply('ping');
     }
-    if (msg.content === 'meteo' || msg.content === 'météo' || msg.content === 'wheater') {
+    if (msg.content.toLowerCase() === 'meteo' || msg.content.toLowerCase() === 'météo' || msg.content.toLowerCase() === 'wheater') {
         darksky(function(err, previsions){
             if(err) return msg.reply(err);
         
             msg.reply(`Il fait actuellement ${previsions.currently.temperature}°C avec un temps ${previsions.currently.summary}. \n Le temps sera ${previsions.nextHour.summary} \n Et demain il y aura un maximum de ${previsions.nextDay.temperatureHigh}°C et un minimum de ${previsions.nextDay.temperatureLow}°C avec un temps ${previsions.nextDay.summary} \n À bientôt pour d'autres prévisions! (svp abusez pas j'ai 1000 résultats par jours <3 `);
         });
     }
-    if (msg.content === 'chien') {
+    if (msg.content.toLowerCase() === 'chien') {
         chien(function(err,image){
             if(err) return msg.reply(err);
 
             msg.reply("Voici un chien rien que pour vous 💕", { file: image})
         })
     }
-    if (msg.content === 'chat') {
+    if (msg.content.toLowerCase() === 'chat') {
         msg.reply('Voici un chat rien que pour vous 😻 \n https://lorempixel.com/640/480/cats')
     }
-    if(msg.content === 'chuck') {
+    if(msg.content.toLowerCase() === 'chuck') {
         chuck(function(err,fact){
             if(err) return msg.reply(err);
             msg.reply(`${fact}`)
         })
+    }
+    if(msg.content.toLowerCase() === "et ça fait") {
+        msg.reply("BIM BAM BOUM!")
     }
     
   });
