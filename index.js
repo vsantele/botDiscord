@@ -1,5 +1,10 @@
 const Discord = require('discord.js');
 const request = require('request');
+const fs = require("fs")
+const path = require("path")
+const say = require('say')
+const randToken = require('rand-token')
+require('./latinise')
 const client = new Discord.Client();
 const wikiquote = require('wikiquote')
 const ytdl = require('ytdl-core');
@@ -7,10 +12,16 @@ const prefix = "!"
 
 const queue = new Map();
 
-require('dotenv').load();
+require('dotenv').config();
 const token = process.env.TOKEN_DISCORD;
+var dispatcher;
+var voiceChan;
+let isReady = false
+const voice = say.getInstalledVoices(voices => {if(typeof voices == "array") voices[0]; else voices} )
+
+const songsPath = path.join(__dirname, "songs")
 var darksky = function(callback){
-	var  url = 'https://api.darksky.net/forecast/1db40f2d4215858a66ed5ae0d02a2bc6/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly';
+	var  url = `https://api.darksky.net/forecast/${process.env.DARKSKY_TOKEN}/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly`;
 
 	request(url, function(err, response, body){
 		try{
@@ -101,41 +112,41 @@ const diffSub = async callback => {
 }
 
 client.on('ready', () => {
+    isReady = true
     console.log(`Logged in as ${client.user.tag}!`);
   });
 //   const channel = client.channels.get('471729962060087297')
 //   const channel = client.guilds.channels.find(chan => chan.name === 'général')
 //   channel.send('Hello World')
   client.on('message', msg => {
-    const message = msg;
-    if (message.author.bot) return;
-    if (msg.content === 'ping') {
+    if(msg.author.bot) return;
+    if (msg.content.toLowerCase() === 'ping') {
       msg.reply('pong');
     }
-    if (msg.content === 'pong') {
+     else if (msg.content.toLowerCase() === 'pong') {
         msg.reply('ping');
     }
-    if (msg.content === 'meteo' || msg.content === 'météo' || msg.content === 'wheater') {
+     else if (msg.content.toLowerCase() === 'meteo' || msg.content.toLowerCase() === 'météo' || msg.content.toLowerCase() === 'wheater') {
         darksky(function(err, previsions){
             if(err) return msg.reply(err);
         
-            msg.reply(`Il fait actuellement ${previsions.currently.temperature}°C avec un temps ${previsions.currently.summary}. \n Le temps sera ${previsions.nextHour.summary} \n Et demain il y aura un maximum de ${previsions.nextDay.temperatureHigh}°C et un minimum de ${previsions.nextDay.temperatureLow}°C avec un temps ${previsions.nextDay.summary} \n À bientôt pour d'autres prévisions! (svp abusez pas j'ai 1000 résultats par jours <3 `);
+            msg.channel.send(`Il fait actuellement ${previsions.currently.temperature}°C avec un temps ${previsions.currently.summary}. \n Le temps sera ${previsions.nextHour.summary} \n Et demain il y aura un maximum de ${previsions.nextDay.temperatureHigh}°C et un minimum de ${previsions.nextDay.temperatureLow}°C avec un temps ${previsions.nextDay.summary} \n À bientôt pour d'autres prévisions! (svp abusez pas j'ai 1000 résultats par jours <3 `);
         });
     }
-    if (msg.content === 'chien') {
+    else if (msg.content.toLowerCase() === 'chien') {
         chien(function(err,image){
             if(err) return msg.reply(err);
 
             msg.reply("Voici un chien rien que pour vous 💕", { file: image})
         })
     }
-    if (msg.content === 'chat') {
+    else if (msg.content.toLowerCase() === 'chat') {
         msg.reply('Voici un chat rien que pour vous 😻 \n https://lorempixel.com/640/480/cats')
     }
-    if(msg.content === 'chuck') {
+    else if(msg.content.toLowerCase() === 'chuck') {
         chuck(function(err,fact){
             if(err) return msg.reply(err);
-            msg.reply(`${fact}`)
+            msg.channel.send(`${fact}`)
         })
     }
     if (msg.content === 'quote') {
@@ -162,9 +173,62 @@ client.on('ready', () => {
        } else if (message.content.startsWith(`${prefix}stop`)) {
         stop(message, serverQueue);
         return;
-       } else {
-       message.channel.send('You need to enter a valid command!')
        }
+    else if(msg.content.toLowerCase() === "et ça fait") {
+        voiceChan = msg.member.voiceChannel
+        msg.channel.send("BIM BAM BOUM!")
+        if(isReady) {
+            voiceChan.join().then(con => {
+                isReady = false
+                dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
+                dispatcher.setVolume(0.2)
+                dispatcher.on("end", end => {
+                    console.log('end :', end);
+                    voiceChan.leave()
+                    fs.unlink(path.join(songsPath,token), console.error)
+                    isReady = true
+                })
+            }).catch(console.error)
+        }
+    }
+    else if (msg.author.username === "WolfVic" && msg.content.toLowerCase() === "debug") {
+        msg.channel.send("debug: ")
+    }
+    else if (isReady && msg.content.toLowerCase().startsWith("play")) {
+        isReady = false;
+        const arg = msg.content.slice(4);
+        const token = randToken.generate(5) + '.wav'
+        console.log('arg :', arg);
+        voiceChan = msg.member.voiceChannel
+        if(!voiceChan) {
+            return msg.reply(" TU DOIS ETRE EN VOCAL CONNARD!")
+        }
+        if (arg.length > 2) {
+
+            say.export(arg,voice,1.0,path.join(songsPath,token), (err) => {
+                if (err) {
+                    msg.channel.send("Erreur export...")
+                    return msg.channel.send(err)
+                }
+                voiceChan.join().then(con => {
+                    dispatcher = con.playFile(path.join(songsPath,token))
+                    dispatcher.setVolume(0.2)
+                    dispatcher.on("end", end => {
+                        voiceChan.leave()
+                        fs.unlink(path.join(songsPath,token), console.error)
+                        isReady = true
+                    })
+                }).catch((err) => {
+                    if (err) console.error(err)
+                    fs.unlink(path.join(songsPath,token), console.error)
+                    isReady = true
+                })
+            })
+        }
+        
+    } else if(msg.content.toLowerCase().startsWith("stop")) {
+        msg.member.voiceChannel.leave()
+    }
     
   });
 
