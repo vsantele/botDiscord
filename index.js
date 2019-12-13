@@ -1,6 +1,11 @@
 const Discord = require('discord.js');
 const request = require('request');
 const client = new Discord.Client();
+const wikiquote = require('wikiquote')
+const ytdl = require('ytdl-core');
+const prefix = "!"
+
+const queue = new Map();
 
 require('dotenv').load();
 const token = process.env.TOKEN_DISCORD;
@@ -63,11 +68,47 @@ var chuck = function(callback) {
     })
 }
 
+var quote = async function(callback) {
+    wikiquote.searchPeople('steve jobs')
+        .then(page => {wikiquote.getRandomQuote(page[0].title); console.log(page[0])})
+        .then(quote => {
+            console.log(quote)
+            callback(null, quote)
+        })
+        .catch(e => {
+            if (e) {
+                console.error(e);
+                callback(e)
+            }
+        })
+
+}
+
+const diffSub = async callback => {
+    const url = 'https://www.googleapis.com/youtube/v3/channels?id=UC-lHJZR3Gqxm24_Vd_AJ5Yw,UCq-Fj5jknLsUf-MWSy4_brA&part=statistics&key=AIzaSyDFR4RRS18rJRqr1Jhjo7QikW6UarhT85M'
+    request(url, (err, res, body) => {
+        try {
+            var result = JSON.parse(body)
+            let arrSub = result.items.map(chan => {return {sub: chan.statistics.subscriberCount, id: chan.id, view: chan.statistics.viewCount}}) // 0: Pew 1: Tse
+            let diff = arrSub[0].sub - arrSub[1].sub
+            let diffV = arrSub[0].view - arrSub[1].view
+            if (arrSub[0].id !== 'UC-lHJZR3Gqxm24_Vd_AJ5Yw') {diff = 0 - diff; diffV = 0 - diffV}
+            callback(null, `PewDiePie a ${diff} abonnés de plus que T-Series! et il y a une différence de ${diffV} vues`)
+        } catch(e) {
+            callback(e)
+        }
+    })
+}
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
   });
-  
+//   const channel = client.channels.get('471729962060087297')
+//   const channel = client.guilds.channels.find(chan => chan.name === 'général')
+//   channel.send('Hello World')
   client.on('message', msg => {
+    const message = msg;
+    if (message.author.bot) return;
     if (msg.content === 'ping') {
       msg.reply('pong');
     }
@@ -97,8 +138,115 @@ client.on('ready', () => {
             msg.reply(`${fact}`)
         })
     }
+    if (msg.content === 'quote') {
+        quote(function(err, quote) {
+            if (err) return msg.reply(err);
+            msg.reply(`${quote}`)
+        })
+    }
+    if (msg.content === 'pewds') {
+        // console.dir(JSON.stringify(msg))
+        diffSub((err, diff) => {
+            if (err) return msg.reply(err);
+            msg.reply(`${diff}`)
+        })
+
+    }
+
+    if (message.content.startsWith(`${prefix}play`)) {
+        execute(message, serverQueue);
+        return;
+       } else if (message.content.startsWith(`${prefix}skip`)) {
+        skip(message, serverQueue);
+        return;
+       } else if (message.content.startsWith(`${prefix}stop`)) {
+        stop(message, serverQueue);
+        return;
+       } else {
+       message.channel.send('You need to enter a valid command!')
+       }
     
   });
+
+  async function execute(message, serverQueue) {
+	const args = message.content.split(' ');
+
+	const voiceChannel = message.member.voiceChannel;
+	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
+	const permissions = voiceChannel.permissionsFor(message.client.user);
+	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+		return message.channel.send('I need the permissions to join and speak in your voice channel!');
+	}
+
+	const songInfo = await ytdl.getInfo(args[1]);
+	const song = {
+		title: songInfo.title,
+		url: songInfo.video_url,
+	};
+
+	if (!serverQueue) {
+		const queueContruct = {
+			textChannel: message.channel,
+			voiceChannel: voiceChannel,
+			connection: null,
+			songs: [],
+			volume: 5,
+			playing: true,
+		};
+
+		queue.set(message.guild.id, queueContruct);
+
+		queueContruct.songs.push(song);
+
+		try {
+			var connection = await voiceChannel.join();
+			queueContruct.connection = connection;
+			play(message.guild, queueContruct.songs[0]);
+		} catch (err) {
+			console.log(err);
+			queue.delete(message.guild.id);
+			return message.channel.send(err);
+		}
+	} else {
+		serverQueue.songs.push(song);
+		console.log(serverQueue.songs);
+		return message.channel.send(`${song.title} has been added to the queue!`);
+	}
+
+}
+
+function skip(message, serverQueue) {
+	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
+	if (!serverQueue) return message.channel.send('There is no song that I could skip!');
+	serverQueue.connection.dispatcher.end();
+}
+
+function stop(message, serverQueue) {
+	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
+	serverQueue.songs = [];
+	serverQueue.connection.dispatcher.end();
+}
+
+function play(guild, song) {
+	const serverQueue = queue.get(guild.id);
+
+	if (!song) {
+		serverQueue.voiceChannel.leave();
+		queue.delete(guild.id);
+		return;
+	}
+
+	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+		.on('end', () => {
+			console.log('Music ended!');
+			serverQueue.songs.shift();
+			play(guild, serverQueue.songs[0]);
+		})
+		.on('error', error => {
+			console.error(error);
+		});
+	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+}
   
   client.login(token);
 
