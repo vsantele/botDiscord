@@ -11,10 +11,13 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
+    "ffmpeg": "^0.0.4",
     "fotology-x": "^1.2.4",
     "googleapis": "^45.0.0",
-    "opusscript": "^0.0.6",
+    "opusscript": "^0.0.7",
+    "rand-token": "^0.4.0",
     "request": "^2.87.0",
+    "say": "^0.16.0",
     "snekfetch": "^4.0.4"
   }
 }

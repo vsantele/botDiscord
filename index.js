@@ -1,9 +1,19 @@
 const Discord = require('discord.js');
 const request = require('request');
+const fs = require("fs")
+const path = require("path")
+const say = require('say')
+const randToken = require('rand-token')
+require('./latinise')
 const client = new Discord.Client();
-
 require('dotenv').config();
 const token = process.env.TOKEN_DISCORD;
+var dispatcher;
+var voiceChan;
+let isReady = false
+const voice = say.getInstalledVoices(voices => {if(typeof voices == "array") voices[0]; else voices} )
+
+const songsPath = path.join(__dirname, "songs")
 var darksky = function(callback){
 	var  url = `https://api.darksky.net/forecast/${process.env.DARKSKY_TOKEN}/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly`;
 
@@ -64,6 +74,7 @@ var chuck = function(callback) {
 }
 
 client.on('ready', () => {
+    isReady = true
     console.log(`Logged in as ${client.user.tag}!`);
   });
   
@@ -99,10 +110,59 @@ client.on('ready', () => {
         })
     }
     else if(msg.content.toLowerCase() === "et ça fait") {
+        voiceChan = msg.member.voiceChannel
         msg.channel.send("BIM BAM BOUM!")
+        if(isReady) {
+            voiceChan.join().then(con => {
+                isReady = false
+                dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
+                dispatcher.setVolume(0.2)
+                dispatcher.on("end", end => {
+                    console.log('end :', end);
+                    voiceChan.leave()
+                    fs.unlink(path.join(songsPath,token), console.error)
+                    isReady = true
+                })
+            }).catch(console.error)
+        }
     }
     else if (msg.author.username === "WolfVic" && msg.content.toLowerCase() === "debug") {
         msg.channel.send("debug: ")
+    }
+    else if (isReady && msg.content.toLowerCase().startsWith("play")) {
+        isReady = false;
+        const arg = msg.content.slice(4);
+        const token = randToken.generate(5) + '.wav'
+        console.log('arg :', arg);
+        voiceChan = msg.member.voiceChannel
+        if(!voiceChan) {
+            return msg.reply(" TU DOIS ETRE EN VOCAL CONNARD!")
+        }
+        if (arg.length > 2) {
+
+            say.export(arg,voice,1.0,path.join(songsPath,token), (err) => {
+                if (err) {
+                    msg.channel.send("Erreur export...")
+                    return msg.channel.send(err)
+                }
+                voiceChan.join().then(con => {
+                    dispatcher = con.playFile(path.join(songsPath,token))
+                    dispatcher.setVolume(0.2)
+                    dispatcher.on("end", end => {
+                        voiceChan.leave()
+                        fs.unlink(path.join(songsPath,token), console.error)
+                        isReady = true
+                    })
+                }).catch((err) => {
+                    if (err) console.error(err)
+                    fs.unlink(path.join(songsPath,token), console.error)
+                    isReady = true
+                })
+            })
+        }
+        
+    } else if(msg.content.toLowerCase().startsWith("stop")) {
+        msg.member.voiceChannel.leave()
     }
     
   });
