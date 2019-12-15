@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const request = require('request');
 const fs = require("fs")
 const path = require("path")
-const say = require('say')
+const Say = require('say').Say
 const randToken = require('rand-token')
 require('./latinise')
 const client = new Discord.Client();
@@ -10,6 +10,7 @@ const wikiquote = require('wikiquote')
 const ytdl = require('ytdl-core');
 const prefix = "!"
 
+const say = new Say(process.platform)
 const queue = new Map();
 let volume = 1;
 
