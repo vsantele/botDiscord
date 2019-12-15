@@ -11,6 +11,7 @@ const ytdl = require('ytdl-core');
 const prefix = "!"
 
 const queue = new Map();
+let volume = 1;
 
 require('dotenv').config();
 const token = process.env.TOKEN_DISCORD;
@@ -120,6 +121,7 @@ client.on('ready', () => {
 //   channel.send('Hello World')
   client.on('message', msg => {
     if(msg.author.bot) return;
+    const serverQueue = queue.get(msg.guild.id);
     if (msg.content.toLowerCase() === 'ping') {
       msg.reply('pong');
     }
@@ -164,15 +166,20 @@ client.on('ready', () => {
 
     }
 
-    if (message.content.startsWith(`${prefix}play`)) {
-        execute(message, serverQueue);
+    if (msg.content.startsWith(`${prefix}play`)) {
+        execute(msg, serverQueue);
         return;
-       } else if (message.content.startsWith(`${prefix}skip`)) {
-        skip(message, serverQueue);
+       } else if (msg.content.startsWith(`${prefix}skip`)) {
+        skip(msg, serverQueue);
         return;
-       } else if (message.content.startsWith(`${prefix}stop`)) {
-        stop(message, serverQueue);
+       } else if (msg.content.startsWith(`${prefix}stop`)) {
+        stop(msg, serverQueue);
         return;
+       } else if (msg.content.startsWith(`${prefix}volume`)) {
+            const args = msg.content.split(' ');
+            volume = args[1]/100
+            serverQueue.connection.dispatcher.setVolumeLogarithmic(volume)
+            
        }
     else if(msg.content.toLowerCase() === "et ça fait") {
         voiceChan = msg.member.voiceChannel
@@ -181,7 +188,7 @@ client.on('ready', () => {
             voiceChan.join().then(con => {
                 isReady = false
                 dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
-                dispatcher.setVolume(0.2)
+                dispatcher.setVolumeLogarithmic(volume)
                 dispatcher.on("end", end => {
                     console.log('end :', end);
                     voiceChan.leave()
@@ -197,7 +204,7 @@ client.on('ready', () => {
     else if (isReady && msg.content.toLowerCase().startsWith("play")) {
         isReady = false;
         const arg = msg.content.slice(4);
-        const token = randToken.generate(5) + '.wav'
+        const tokenSong = randToken.generate(5) + '.wav'
         console.log('arg :', arg);
         voiceChan = msg.member.voiceChannel
         if(!voiceChan) {
@@ -205,22 +212,22 @@ client.on('ready', () => {
         }
         if (arg.length > 2) {
 
-            say.export(arg,voice,1.0,path.join(songsPath,token), (err) => {
+            say.export(arg,voice,1.0,path.join(songsPath,tokenSong), (err) => {
                 if (err) {
                     msg.channel.send("Erreur export...")
                     return msg.channel.send(err)
                 }
                 voiceChan.join().then(con => {
-                    dispatcher = con.playFile(path.join(songsPath,token))
-                    dispatcher.setVolume(0.2)
+                    dispatcher = con.playFile(path.join(songsPath,tokenSong))
+                    dispatcher.setVolumeLogarithmic(volume)
                     dispatcher.on("end", end => {
                         voiceChan.leave()
-                        fs.unlink(path.join(songsPath,token), console.error)
+                        fs.unlink(path.join(songsPath,tokenSong), console.error)
                         isReady = true
                     })
                 }).catch((err) => {
                     if (err) console.error(err)
-                    fs.unlink(path.join(songsPath,token), console.error)
+                    fs.unlink(path.join(songsPath,tokenSong), console.error)
                     isReady = true
                 })
             })
@@ -228,18 +235,20 @@ client.on('ready', () => {
         
     } else if(msg.content.toLowerCase().startsWith("stop")) {
         msg.member.voiceChannel.leave()
+        fs.unlink(path.join(songsPath,tokenSong), console.error)
+        isReady = true
     }
     
   });
 
-  async function execute(message, serverQueue) {
-	const args = message.content.split(' ');
+  async function execute(msg, serverQueue) {
+	const args = msg.content.split(' ');
 
-	const voiceChannel = message.member.voiceChannel;
-	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
-	const permissions = voiceChannel.permissionsFor(message.client.user);
+	const voiceChannel = msg.member.voiceChannel;
+	if (!voiceChannel) return msg.channel.send('You need to be in a voice channel to play music!');
+	const permissions = voiceChannel.permissionsFor(msg.client.user);
 	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-		return message.channel.send('I need the permissions to join and speak in your voice channel!');
+		return msg.channel.send('I need the permissions to join and speak in your voice channel!');
 	}
 
 	const songInfo = await ytdl.getInfo(args[1]);
@@ -247,10 +256,10 @@ client.on('ready', () => {
 		title: songInfo.title,
 		url: songInfo.video_url,
 	};
-
+    
 	if (!serverQueue) {
 		const queueContruct = {
-			textChannel: message.channel,
+			textChannel: msg.channel,
 			voiceChannel: voiceChannel,
 			connection: null,
 			songs: [],
@@ -258,35 +267,35 @@ client.on('ready', () => {
 			playing: true,
 		};
 
-		queue.set(message.guild.id, queueContruct);
+		queue.set(msg.guild.id, queueContruct);
 
 		queueContruct.songs.push(song);
 
 		try {
 			var connection = await voiceChannel.join();
 			queueContruct.connection = connection;
-			play(message.guild, queueContruct.songs[0]);
+			play(msg.guild, queueContruct.songs[0]);
 		} catch (err) {
 			console.log(err);
-			queue.delete(message.guild.id);
-			return message.channel.send(err);
+			queue.delete(msg.guild.id);
+			return msg.channel.send(err);
 		}
 	} else {
 		serverQueue.songs.push(song);
 		console.log(serverQueue.songs);
-		return message.channel.send(`${song.title} has been added to the queue!`);
+		return msg.channel.send(`${song.title} has been added to the queue!`);
 	}
 
 }
 
-function skip(message, serverQueue) {
-	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
-	if (!serverQueue) return message.channel.send('There is no song that I could skip!');
+function skip(msg, serverQueue) {
+	if (!msg.member.voiceChannel) return msg.channel.send('You have to be in a voice channel to stop the music!');
+	if (!serverQueue) return msg.channel.send('There is no song that I could skip!');
 	serverQueue.connection.dispatcher.end();
 }
 
-function stop(message, serverQueue) {
-	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
+function stop(msg, serverQueue) {
+	if (!msg.member.voiceChannel) return msg.channel.send('You have to be in a voice channel to stop the music!');
 	serverQueue.songs = [];
 	serverQueue.connection.dispatcher.end();
 }
@@ -309,7 +318,7 @@ function play(guild, song) {
 		.on('error', error => {
 			console.error(error);
 		});
-	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+	dispatcher.setVolumeLogarithmic(volume);
 }
   
   client.login(token);
