@@ -11,21 +11,20 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
-    "ffmpeg": "^0.0.4",
-    "fotology-x": "^1.2.4",
     "google-auth-library": "^3.0.1",
     "googleapis": "^37.1.0",
-    "ibm-watson": "^5.2.1",
     "nodemw": "^0.12.2",
+    "request": "^2.88.0",
+    "youtube-node": "^1.3.3",
+    "ytdl-core": "^1.0.3",
+    "ffmpeg": "^0.0.4",
+    "fotology-x": "^1.2.4",
+    "ibm-watson": "^5.2.1",
     "opusscript": "^0.0.7",
     "rand-token": "^0.4.0",
     "readline": "^1.3.0",
-    "request": "^2.88.0",
-    "requests": "^0.3.0",
     "say": "^0.16.0",
     "snekfetch": "^4.0.4",
-    "wikiquote": "^0.4.5",
-    "youtube-node": "^1.3.3",
-    "ytdl-core": "^1.0.3"
+    "wikiquote": "^0.4.5"
   }
 }
