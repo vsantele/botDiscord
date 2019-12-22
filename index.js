@@ -264,7 +264,7 @@ client.on('ready', () => {
         voiceChan = msg.member.voiceChannel
         if (isReady && voiceChan) {
         voicerss.speech({
-            key: 'ebf0f29407574f8bb49269efc77193ca',
+            key: process.env.VOICERSS_KEY,
             hl: 'fr-fr',
             src: arg,
             r: 0,
