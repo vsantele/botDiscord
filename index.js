@@ -3,7 +3,10 @@ const request = require('request');
 const fs = require("fs")
 const path = require("path")
 const Say = require('say').Say
+const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1')
+const { IamAuthenticator } = require('ibm-watson/auth');
 const randToken = require('rand-token')
+const voicerss = require("./voicerrs")
 require('./latinise')
 const client = new Discord.Client();
 const wikiquote = require('wikiquote')
@@ -183,9 +186,9 @@ client.on('ready', () => {
             
        }
     else if(msg.content.toLowerCase() === "et ça fait") {
-        voiceChan = msg.member.voiceChannel
         msg.channel.send("BIM BAM BOUM!")
-        if(isReady) {
+        voiceChan = msg.member.voiceChannel
+        if(voiceChan && isReady) {
             voiceChan.join().then(con => {
                 isReady = false
                 dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
@@ -193,7 +196,7 @@ client.on('ready', () => {
                 dispatcher.on("end", end => {
                     console.log('end :', end);
                     voiceChan.leave()
-                    fs.unlink(path.join(songsPath,token), console.error)
+                    // fs.unlink(path.join(songsPath,token), console.error)
                     isReady = true
                 })
             }).catch(console.error)
@@ -204,40 +207,63 @@ client.on('ready', () => {
     }
     else if (isReady && msg.content.toLowerCase().startsWith("play")) {
         isReady = false;
-        const arg = msg.content.slice(4);
-        const tokenSong = randToken.generate(5) + '.wav'
-        console.log('arg :', arg);
         voiceChan = msg.member.voiceChannel
+        const arg = msg.content.slice(4);
         if(!voiceChan) {
             return msg.reply(" TU DOIS ETRE EN VOCAL CONNARD!")
         }
+        console.log('arg :', arg);
+        
         if (arg.length > 2) {
-
-            say.export(arg,voice,1.0,path.join(songsPath,tokenSong), (err) => {
-                if (err) {
-                    msg.channel.send("Erreur export...")
-                    return msg.channel.send(err)
-                }
-                voiceChan.join().then(con => {
-                    dispatcher = con.playFile(path.join(songsPath,tokenSong))
-                    dispatcher.setVolumeLogarithmic(volume)
-                    dispatcher.on("end", end => {
-                        voiceChan.leave()
-                        fs.unlink(path.join(songsPath,tokenSong), console.error)
-                        isReady = true
-                    })
-                }).catch((err) => {
-                    if (err) console.error(err)
-                    fs.unlink(path.join(songsPath,tokenSong), console.error)
+            const params = {
+                text: arg,
+                voice: 'fr-FR_ReneeV3Voice', // Optional voice
+                accept:'audio/ogg;codecs=opus'
+            };
+            voiceChan.join().then(async con => {
+                let audio = await textToSpeech.synthesize(params)
+                dispatcher = con.playStream(audio.result)
+                // dispatcher = con.playStream(audio.result);
+                dispatcher.setVolumeLogarithmic(1)
+                dispatcher.on("end", end => {
+                    voiceChan.leave()
+                    // fs.unlink(path.join(songsPath,tokenSong), console.error)
                     isReady = true
                 })
             })
         }
-        
     } else if(msg.content.toLowerCase().startsWith("stop")) {
         msg.member.voiceChannel.leave()
-        fs.unlink(path.join(songsPath,tokenSong), console.error)
+        // fs.unlink(path.join(songsPath,tokenSong), console.error)
         isReady = true
+    } else if (msg.content.toLocaleLowerCase().startsWith("test")) {
+        const arg = msg.content.slice(4)
+        voiceChan = msg.member.voiceChannel
+        voicerss.speech({
+            key: 'ebf0f29407574f8bb49269efc77193ca',
+            hl: 'fr-fr',
+            src: arg,
+            r: 0,
+            c: 'mp3',
+            f: '44khz_16bit_stereo',
+            ssml: false,
+            b64: false,
+            callback: function (content, error) {
+                if (error) {return console.error('error: ',error)}
+                console.log('content: ', content)
+                voiceChan.join().then(async con => {
+                    let audio = new Buffer(content)
+                    dispatcher = con.playStream(audio)
+                    // dispatcher = con.playStream(audio.result);
+                    dispatcher.setVolumeLogarithmic(1)
+                    dispatcher.on("end", end => {
+                        voiceChan.leave()
+                        // fs.unlink(path.join(songsPath,tokenSong), console.error)
+                        isReady = true
+                    })
+                })
+            }
+        })
     }
     
   });
