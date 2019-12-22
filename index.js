@@ -24,6 +24,13 @@ var voiceChan;
 let isReady = false
 const voice = say.getInstalledVoices(voices => {if(typeof voices == "array") voices[0]; else voices} )
 
+const textToSpeech = new TextToSpeechV1({
+    authenticator: new IamAuthenticator({
+      apikey:process.env.IBM_KEY
+    }),
+    url:process.env.IBM_URL
+  })
+
 const songsPath = path.join(__dirname, "songs")
 var darksky = function(callback){
 	var  url = `https://api.darksky.net/forecast/${process.env.DARKSKY_TOKEN}/50.7459924,3.2171203?lang=fr&units=si&exclude=flags,hourly`;
@@ -101,9 +108,11 @@ var quote = async function(callback) {
 }
 
 const diffSub = async callback => {
-    const url = 'https://www.googleapis.com/youtube/v3/channels?id=UC-lHJZR3Gqxm24_Vd_AJ5Yw,UCq-Fj5jknLsUf-MWSy4_brA&part=statistics&key=AIzaSyDFR4RRS18rJRqr1Jhjo7QikW6UarhT85M'
+    const url = 'https://www.googleapis.com/youtube/v3/channels?id=UC-lHJZR3Gqxm24_Vd_AJ5Yw,UCq-Fj5jknLsUf-MWSy4_brA&part=statistics&key='+process.env.YOUTUBE_TOKEN
     request(url, (err, res, body) => {
+        if(err) return console.error(err)
         try {
+            console.log('body :', body);
             var result = JSON.parse(body)
             let arrSub = result.items.map(chan => {return {sub: chan.statistics.subscriberCount, id: chan.id, view: chan.statistics.viewCount}}) // 0: Pew 1: Tse
             let diff = arrSub[0].sub - arrSub[1].sub
@@ -116,6 +125,19 @@ const diffSub = async callback => {
     })
 }
 
+function generateOutputFile(channel, member) {
+    // use IDs instead of username cause some people have stupid emojis in their name
+    const fileName = `./recordings/${channel.id}-${member.username}-${Date.now()}.pcm`;
+    return fs.createWriteStream(fileName);
+}
+
+const { Readable } = require('stream');
+class Silence extends Readable {
+  _read() {
+    this.push(Buffer.from([0xF8, 0xFF, 0xFE]));
+  }
+}
+
 client.on('ready', () => {
     isReady = true
     console.log(`Logged in as ${client.user.tag}!`);
@@ -123,7 +145,7 @@ client.on('ready', () => {
 //   const channel = client.channels.get('471729962060087297')
 //   const channel = client.guilds.channels.find(chan => chan.name === 'général')
 //   channel.send('Hello World')
-  client.on('message', msg => {
+  client.on('message', async msg => {
     if(msg.author.bot) return;
     const serverQueue = queue.get(msg.guild.id);
     if (msg.content.toLowerCase() === 'ping') {
@@ -170,13 +192,13 @@ client.on('ready', () => {
 
     }
 
-    if (msg.content.startsWith(`${prefix}play`)) {
+    if (isReady && msg.content.startsWith(`${prefix}play`)) {
         execute(msg, serverQueue);
         return;
-       } else if (msg.content.startsWith(`${prefix}skip`)) {
+       } else if (isReady && msg.content.startsWith(`${prefix}skip`)) {
         skip(msg, serverQueue);
         return;
-       } else if (msg.content.startsWith(`${prefix}stop`)) {
+       } else if (isReady && msg.content.startsWith(`${prefix}stop`)) {
         stop(msg, serverQueue);
         return;
        } else if (msg.content.startsWith(`${prefix}volume`)) {
@@ -192,7 +214,7 @@ client.on('ready', () => {
             voiceChan.join().then(con => {
                 isReady = false
                 dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
-                dispatcher.setVolumeLogarithmic(volume)
+                dispatcher.setVolumeLogarithmic(0.5)
                 dispatcher.on("end", end => {
                     console.log('end :', end);
                     voiceChan.leave()
@@ -205,8 +227,7 @@ client.on('ready', () => {
     else if (msg.author.username === "WolfVic" && msg.content.toLowerCase() === "debug") {
         msg.channel.send("debug: ")
     }
-    else if (isReady && msg.content.toLowerCase().startsWith("play")) {
-        isReady = false;
+    else if (isReady && msg.content.toLowerCase().startsWith("voice")) {
         voiceChan = msg.member.voiceChannel
         const arg = msg.content.slice(4);
         if(!voiceChan) {
@@ -215,13 +236,14 @@ client.on('ready', () => {
         console.log('arg :', arg);
         
         if (arg.length > 2) {
+            isReady = false;
             const params = {
                 text: arg,
                 voice: 'fr-FR_ReneeV3Voice', // Optional voice
                 accept:'audio/ogg;codecs=opus'
             };
+            let audio = await textToSpeech.synthesize(params)
             voiceChan.join().then(async con => {
-                let audio = await textToSpeech.synthesize(params)
                 dispatcher = con.playStream(audio.result)
                 // dispatcher = con.playStream(audio.result);
                 dispatcher.setVolumeLogarithmic(1)
@@ -236,11 +258,13 @@ client.on('ready', () => {
         msg.member.voiceChannel.leave()
         // fs.unlink(path.join(songsPath,tokenSong), console.error)
         isReady = true
-    } else if (msg.content.toLocaleLowerCase().startsWith("test")) {
+    } else if (msg.content.toLocaleLowerCase().startsWith("play")) {
         const arg = msg.content.slice(4)
+        console.log(msg.content)
         voiceChan = msg.member.voiceChannel
+        if (isReady && voiceChan) {
         voicerss.speech({
-            key: 'ebf0f29407574f8bb49269efc77193ca',
+            key: process.env.VOICERSS_KEY,
             hl: 'fr-fr',
             src: arg,
             r: 0,
@@ -248,23 +272,64 @@ client.on('ready', () => {
             f: '44khz_16bit_stereo',
             ssml: false,
             b64: false,
-            callback: function (content, error) {
-                if (error) {return console.error('error: ',error)}
-                console.log('content: ', content)
+            callback: function (error, audio) {
+                if (error) {return console.error('error: ',error.toString())}
+                // console.log('content: ', audio.toString())
+                fs.writeFileSync('./songs/test.mp3',Buffer.from(audio))
                 voiceChan.join().then(async con => {
-                    let audio = new Buffer(content)
-                    dispatcher = con.playStream(audio)
-                    // dispatcher = con.playStream(audio.result);
+                    console.log("Play sound")
+                    dispatcher = con.playFile('./songs/test.mp3')
                     dispatcher.setVolumeLogarithmic(1)
                     dispatcher.on("end", end => {
                         voiceChan.leave()
-                        // fs.unlink(path.join(songsPath,tokenSong), console.error)
+                        fs.unlink('./songs/test.mp3', console.error)
                         isReady = true
+                        console.log("Stop song")
                     })
                 })
+                }
+            })
+        }
+    } else if (msg.content.startsWith('rec')) {
+            const voiceChannel = msg.member.voiceChannel
+            //console.log(voiceChannel.id);
+            if (!voiceChannel || voiceChannel.type !== 'voice') {
+              return msg.reply(`I couldn't find the channel ${channelName}. Can you spell?`);
             }
-        })
-    }
+            voiceChannel.join()
+              .then(conn => {
+                  let dispatcher;
+                msg.reply('ready!');
+                // create our voice receiver
+                const receiver = conn.createReceiver();
+                conn.on('ready', ()=>{
+                    dispatcher = conn.play(new Silence(), { type: 'opus' });
+                })
+                conn.on('speaking', (user, speaking) => {
+                  if (speaking) {
+                    //   console.log(user)
+                      if(user.username === 'WolfVic') {
+                          const outputStream = generateOutputFile(voiceChannel, user);
+                          const audioStream = receiver.createPCMStream(user);
+                          dispatcher.end()
+                          dispatcher = conn.playStream(audioStream);
+                          audioStream.pipe(outputStream)
+                          // when the stream ends (the user stopped talking) tell the user
+                          audioStream.on('end', () => {
+                            msg.channel.send(`I'm no longer listening to ${user}`);
+                            voiceChannel.leave()
+                          });
+
+                      }
+                    // msg.channel.send(`I'm listening to ${user}`);
+                    // this creates a 16-bit signed PCM, stereo 48KHz PCM stream.
+                    // create an output stream so we can dump our data in a file
+                    // pipe our audio data into the file stream
+                  }
+                });
+              })
+              .catch(console.log);
+          }
     
   });
 
@@ -299,8 +364,10 @@ client.on('ready', () => {
 		queueContruct.songs.push(song);
 
 		try {
-			var connection = await voiceChannel.join();
-			queueContruct.connection = connection;
+            // console.log("queue:",queueContruct.songs[0])
+            var connection = await voiceChannel.join();
+            // console.log('connection :', connection);
+            queueContruct.connection = connection;
 			play(msg.guild, queueContruct.songs[0]);
 		} catch (err) {
 			console.log(err);
@@ -329,13 +396,12 @@ function stop(msg, serverQueue) {
 
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
-
 	if (!song) {
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
 	}
-
+    console.log(song)
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', () => {
 			console.log('Music ended!');
