@@ -125,6 +125,19 @@ const diffSub = async callback => {
     })
 }
 
+function generateOutputFile(channel, member) {
+    // use IDs instead of username cause some people have stupid emojis in their name
+    const fileName = `./recordings/${channel.id}-${member.username}-${Date.now()}.pcm`;
+    return fs.createWriteStream(fileName);
+}
+
+const { Readable } = require('stream');
+class Silence extends Readable {
+  _read() {
+    this.push(Buffer.from([0xF8, 0xFF, 0xFE]));
+  }
+}
+
 client.on('ready', () => {
     isReady = true
     console.log(`Logged in as ${client.user.tag}!`);
@@ -201,7 +214,7 @@ client.on('ready', () => {
             voiceChan.join().then(con => {
                 isReady = false
                 dispatcher = con.playFile(path.join(songsPath,'Carla - Bim Bam toi (Clip Officiel).mp3'))
-                dispatcher.setVolumeLogarithmic(volume)
+                dispatcher.setVolumeLogarithmic(0.5)
                 dispatcher.on("end", end => {
                     console.log('end :', end);
                     voiceChan.leave()
@@ -214,7 +227,7 @@ client.on('ready', () => {
     else if (msg.author.username === "WolfVic" && msg.content.toLowerCase() === "debug") {
         msg.channel.send("debug: ")
     }
-    else if (isReady && msg.content.toLowerCase().startsWith("play")) {
+    else if (isReady && msg.content.toLowerCase().startsWith("voice")) {
         voiceChan = msg.member.voiceChannel
         const arg = msg.content.slice(4);
         if(!voiceChan) {
@@ -245,9 +258,11 @@ client.on('ready', () => {
         msg.member.voiceChannel.leave()
         // fs.unlink(path.join(songsPath,tokenSong), console.error)
         isReady = true
-    } else if (msg.content.toLocaleLowerCase().startsWith("test")) {
+    } else if (msg.content.toLocaleLowerCase().startsWith("play")) {
         const arg = msg.content.slice(4)
+        console.log(msg.content)
         voiceChan = msg.member.voiceChannel
+        if (isReady && voiceChan) {
         voicerss.speech({
             key: 'ebf0f29407574f8bb49269efc77193ca',
             hl: 'fr-fr',
@@ -260,21 +275,61 @@ client.on('ready', () => {
             callback: function (error, audio) {
                 if (error) {return console.error('error: ',error.toString())}
                 // console.log('content: ', audio.toString())
-                fs.writeFileSync('./test.mp3',audio)
-                if (isReady && voiceChan) {
-                    voiceChan.join().then(async con => {
-                        dispatcher = con.playArbitraryInput(audio)
-                        dispatcher.setVolumeLogarithmic(1)
-                        dispatcher.on("end", end => {
-                            voiceChan.leave()
-                            // fs.unlink(path.join(songsPath,tokenSong), console.error)
-                            isReady = true
-                        })
+                fs.writeFileSync('./songs/test.mp3',Buffer.from(audio))
+                voiceChan.join().then(async con => {
+                    console.log("Play sound")
+                    dispatcher = con.playFile('./songs/test.mp3')
+                    dispatcher.setVolumeLogarithmic(1)
+                    dispatcher.on("end", end => {
+                        voiceChan.leave()
+                        fs.unlink('./songs/test.mp3', console.error)
+                        isReady = true
+                        console.log("Stop song")
                     })
+                })
                 }
+            })
+        }
+    } else if (msg.content.startsWith('rec')) {
+            const voiceChannel = msg.member.voiceChannel
+            //console.log(voiceChannel.id);
+            if (!voiceChannel || voiceChannel.type !== 'voice') {
+              return msg.reply(`I couldn't find the channel ${channelName}. Can you spell?`);
             }
-        })
-    }
+            voiceChannel.join()
+              .then(conn => {
+                  let dispatcher;
+                msg.reply('ready!');
+                // create our voice receiver
+                const receiver = conn.createReceiver();
+                conn.on('ready', ()=>{
+                    dispatcher = conn.play(new Silence(), { type: 'opus' });
+                })
+                conn.on('speaking', (user, speaking) => {
+                  if (speaking) {
+                    //   console.log(user)
+                      if(user.username === 'WolfVic') {
+                          const outputStream = generateOutputFile(voiceChannel, user);
+                          const audioStream = receiver.createPCMStream(user);
+                          dispatcher.end()
+                          dispatcher = conn.playStream(audioStream);
+                          audioStream.pipe(outputStream)
+                          // when the stream ends (the user stopped talking) tell the user
+                          audioStream.on('end', () => {
+                            msg.channel.send(`I'm no longer listening to ${user}`);
+                            voiceChannel.leave()
+                          });
+
+                      }
+                    // msg.channel.send(`I'm listening to ${user}`);
+                    // this creates a 16-bit signed PCM, stereo 48KHz PCM stream.
+                    // create an output stream so we can dump our data in a file
+                    // pipe our audio data into the file stream
+                  }
+                });
+              })
+              .catch(console.log);
+          }
     
   });
 
@@ -309,9 +364,9 @@ client.on('ready', () => {
 		queueContruct.songs.push(song);
 
 		try {
-            console.log("queue:",queueContruct.songs[0])
+            // console.log("queue:",queueContruct.songs[0])
             var connection = await voiceChannel.join();
-            console.log('connection :', connection);
+            // console.log('connection :', connection);
             queueContruct.connection = connection;
 			play(msg.guild, queueContruct.songs[0]);
 		} catch (err) {
