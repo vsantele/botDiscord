@@ -26,9 +26,9 @@ const voice = say.getInstalledVoices(voices => {if(typeof voices == "array") voi
 
 const textToSpeech = new TextToSpeechV1({
     authenticator: new IamAuthenticator({
-      apikey:'bCK92qL9hYoAYKHLLL2C4iR3dJ5_YMrpYCc1Ai_18G4B'
+      apikey:process.env.IBM_KEY
     }),
-    url:'https://api.eu-gb.text-to-speech.watson.cloud.ibm.com/instances/d4659409-0a6e-4d7c-86e4-811fed134ea5'
+    url:process.env.IBM_URL
   })
 
 const songsPath = path.join(__dirname, "songs")
