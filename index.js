@@ -8,10 +8,10 @@ const {
 } = require('ibm-watson/auth');
 const genius = require('genius-lyrics')
 const voicerss = require("./voicerrs")
-require('./latinise')
 const client = new Discord.Client();
 const wikiquote = require('wikiquote')
 const ytdl = require('ytdl-core');
+const LanguageDetect = require('languagedetect');
 const prefix = "!"
 
 const queue = new Map();
@@ -19,6 +19,8 @@ let volume = 1;
 
 require('dotenv').config();
 const Genius = new genius.Client(process.env.GENIUS_TOKEN)
+const lngDetector = new LanguageDetect();
+lngDetector.setLanguageType('iso2')
 const token = process.env.TOKEN_DISCORD;
 var dispatcher;
 var voiceChan;
@@ -139,8 +141,7 @@ const diffSub = async callback => {
     })
 }
 
-const lyrics = async (msg) => {
-    const track = msg.content.slice('genius'.length)
+const lyrics = async (track) => {
     let lyrics
     if (track.length > 2) {
         try {
@@ -362,10 +363,31 @@ client.on('message', async msg => {
     } else if (msg.content.toLowerCase().startsWith('genius')) {
         voiceChan = msg.member.voiceChannel
         if (isReady && voiceChan) {
-            const text = await lyrics(msg)
+            const track = msg.content.slice('genius'.length)
+            const text = await lyrics(track)
+            const lang = lngDetector.detect(text, 1)[0][0]
+            console.log('lang :', lang);
+            let hl
+            switch (lang) {
+                case 'en':
+                    hl = lang + '-us'
+                    break;
+                case 'fr':
+                case 'nl':
+                case 'es':
+                case 'it':
+                case 'ru':
+                case 'pt':
+                case 'de':
+                    hl = lang + '-' + lang
+                    break;
+                default:
+                    hl = 'fr-fr'
+                    
+            }
             voicerss.speech({
                 key: process.env.VOICERSS_KEY,
-                hl: 'fr-fr',
+                hl: hl,
                 src: text,
                 r: 0,
                 c: 'mp3',
