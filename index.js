@@ -142,16 +142,16 @@ const diffSub = async callback => {
 }
 
 const lyrics = async (track) => {
-    let lyrics
+    let res = []
     if (track.length > 2) {
         try {
+            console.log('track :', track);
             const search = await Genius.findTrack(track)
-            // console.log('search :', search);
-            const url = await Genius.getUrl(search)
-            // console.log('url :', url);
-            const lyricsJSON = await Genius.getLyrics(url)
-            lyrics = lyricsJSON.lyrics
-            return lyrics
+            const info = await Genius.getAll(search)
+            const lyrics = info.lyrics.split('\n').filter(line => !line.startsWith('[')).join('\n')
+            res[0] = lyrics
+            res[1] = info.full_title
+            return res
         } catch (error) {
             console.log('error :', error);
         }
@@ -364,53 +364,58 @@ client.on('message', async msg => {
         voiceChan = msg.member.voiceChannel
         if (isReady && voiceChan) {
             const track = msg.content.slice('genius'.length)
-            const text = await lyrics(track)
-            const lang = lngDetector.detect(text, 1)[0][0]
-            console.log('lang :', lang);
-            let hl
-            switch (lang) {
-                case 'en':
-                    hl = lang + '-us'
-                    break;
-                case 'fr':
-                case 'nl':
-                case 'es':
-                case 'it':
-                case 'ru':
-                case 'pt':
-                case 'de':
-                    hl = lang + '-' + lang
-                    break;
-                default:
-                    hl = 'fr-fr'
-                    
-            }
-            voicerss.speech({
-                key: process.env.VOICERSS_KEY,
-                hl: hl,
-                src: text,
-                r: 0,
-                c: 'mp3',
-                f: '44khz_16bit_stereo',
-                ssml: false,
-                b64: false,
-                callback: function (error, audio) {
-                    if (error) {
-                        return console.error('error: ', error.toString())
-                    }
-                    isReady = false
-                    // console.log('content: ', audio.toString())
-                    fs.writeFileSync('./songs/lyrics.mp3', Buffer.from(audio))
-                    voiceChan.join().then(async con => {
-                        dispatcher = con.playFile('./songs/lyrics.mp3')
-                        dispatcher.setVolumeLogarithmic(1)
-                        dispatcher.on("end", end => {
-                            voiceChan.leave()
-                            isReady = true
-                        })
-                    })
+            if (track.length > 2) {
+                const [text,title] = await lyrics(track)
+            //    const text = await lyrics(track)
+                console.log('text :', text);
+                const lang = lngDetector.detect(text, 1)[0][0]
+                msg.channel.send(title)
+                console.log('lang :', lang);
+                let hl
+                switch (lang) {
+                    case 'en':
+                        hl = lang + '-us'
+                        break;
+                    case 'fr':
+                    case 'nl':
+                    case 'es':
+                    case 'it':
+                    case 'ru':
+                    case 'pt':
+                    case 'de':
+                        hl = lang + '-' + lang
+                        break;
+                    default:
+                        hl = 'fr-fr'
+
                 }
-            })
+                voicerss.speech({
+                    key: process.env.VOICERSS_KEY,
+                    hl: hl,
+                    src: text,
+                    r: 0,
+                    c: 'mp3',
+                    f: '44khz_16bit_stereo',
+                    ssml: false,
+                    b64: false,
+                    callback: function (error, audio) {
+                        if (error) {
+                            return console.error('error: ', error.toString())
+                        }
+                        isReady = false
+                        // console.log('content: ', audio.toString())
+                        fs.writeFileSync('./songs/lyrics.mp3', Buffer.from(audio))
+                        voiceChan.join().then(async con => {
+                            dispatcher = con.playFile('./songs/lyrics.mp3')
+                            dispatcher.setVolumeLogarithmic(1)
+                            dispatcher.on("end", end => {
+                                voiceChan.leave()
+                                isReady = true
+                            })
+                        })
+                    }
+                })
+            }
         }
     }
 
