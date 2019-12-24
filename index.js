@@ -366,11 +366,11 @@ client.on('message', async msg => {
             const track = msg.content.slice('genius'.length)
             if (track.length > 2) {
                 const [text,title] = await lyrics(track)
-            //    const text = await lyrics(track)
-                console.log('text :', text);
+                // const text = await lyrics(track)
+                console.log('titre :', titre);
                 const lang = lngDetector.detect(text, 1)[0][0]
                 msg.channel.send(title)
-                console.log('lang :', lang);
+                // console.log('lang :', lang);
                 let hl
                 switch (lang) {
                     case 'en':
