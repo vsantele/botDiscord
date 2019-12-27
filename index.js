@@ -11,6 +11,7 @@ const voicerss = require("./voicerrs")
 const client = new Discord.Client();
 const wikiquote = require('wikiquote')
 const ytdl = require('ytdl-core');
+const RandomOrg = require('random-org')
 const LanguageDetect = require('languagedetect');
 const prefix = "!"
 
@@ -21,6 +22,7 @@ require('dotenv').config();
 const Genius = new genius.Client(process.env.GENIUS_TOKEN)
 const lngDetector = new LanguageDetect();
 lngDetector.setLanguageType('iso2')
+const random = new RandomOrg({apiKey: process.env.RANDOM_TOKEN})
 const token = process.env.TOKEN_DISCORD;
 var dispatcher;
 var voiceChan;
@@ -367,7 +369,7 @@ client.on('message', async msg => {
             if (track.length > 2) {
                 const [text,title] = await lyrics(track)
                 // const text = await lyrics(track)
-                console.log('titre :', titre);
+                console.log('titre :', title);
                 const lang = lngDetector.detect(text, 1)[0][0]
                 msg.channel.send(title)
                 // console.log('lang :', lang);
@@ -417,6 +419,24 @@ client.on('message', async msg => {
                 })
             }
         }
+    } else if(msg.content.toLowerCase().startsWith('random')) {
+        const args = msg.content.split(' ');
+        const nbs = await random.generateIntegers({min: args[1] ? args[1] : 0, max: args[2] ? args[2] : 10, n: args[3] ? args[3] : 1});
+        // console.log('nbs :', nbs);
+        msg.channel.send(nbs.random.data.join(' '))
+    } else if (msg.content.toLowerCase() === 'help') {
+        let help = 'Liste des commandes: \n'
+        help += 'chat: envoie une photo de chat\n'
+        help += 'chuck: envoie un fact sur chuck norris\n'
+        help += 'play: joue le message dans le channel vocal\n'
+        help += 'stop: fait quitter le bot du channel vocal\n'
+        help += '!play: joue une musique depuis un lien youtube\n'
+        help += '!skip: passe à la chason suivante de la playlist\n'
+        help += '!stop: supprime la playlist en cours et fait quitter le bot du channel vocal\n'
+        help += '!volume [0-200]: change le volume'
+        help += 'et ça fait: BIM BAM BOOM\n'
+        help += 'random [min] [max] [nb]: tire [nb] nombres entiers compris entre [min] et [max] par défaut 1 nombre entre 1 et 10'
+        msg.channel.send(help)
     }
 
 });

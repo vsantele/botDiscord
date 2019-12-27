@@ -1175,6 +1175,11 @@ rand-token@^0.4.0:
   resolved "https://registry.yarnpkg.com/rand-token/-/rand-token-0.4.0.tgz#1a565b6ad12d92dd4b30c4c4e5945e8aa24a5b3b"
   integrity sha512-FLNNsir2R+XY8LKsZ+8u/w0qZ4sGit7cpNdznsI77cAVob6UlVPueDKRyjJ3W1Q6FJLgAVH98JvlqqpSaL7NEQ==
 
+random-org@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/random-org/-/random-org-2.0.1.tgz#d561b27df8a375ff7185799123c6886f48e017cb"
+  integrity sha512-Ot9FE+7QXb+VZLU3b/Rgw+c953Y+IWuysR10qDdnP/pHVs/2lA6TQ07lRBug1DaJYrDkFwcrTwQ/yHQfmHxNWg==
+
 read@1.0.x:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/read/-/read-1.0.7.tgz#b3da19bd052431a97671d44a42634adf710b40c4"
