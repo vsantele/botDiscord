@@ -348,7 +348,7 @@ client.on('message', async msg => {
                 case 'stop':
                     if(args.length > 2 && timer.has(args[2])) {
                         clearTimeout(timer.get(args[2]))
-                        msg.channel.send('Le timer a été enlever')
+                        msg.channel.send('Le timer a été enlevé')
                     } else {
                         msg.channel.send(`le timer n'exite pas`)
                     }
