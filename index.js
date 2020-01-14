@@ -470,9 +470,11 @@ client.on('message', async msg => {
         help += '!play: joue une musique depuis un lien youtube\n'
         help += '!skip: passe à la chason suivante de la playlist\n'
         help += '!stop: supprime la playlist en cours et fait quitter le bot du channel vocal\n'
-        help += '!volume [0-200]: change le volume'
+        help += '!volume [0-200]: change le volume\n'
         help += 'et ça fait: BIM BAM BOOM\n'
-        help += 'random [min] [max] [nb]: tire [nb] nombres entiers compris entre [min] et [max] par défaut 1 nombre entre 1 et 10'
+        help += 'random [min] [max] [nb]: tire [nb] nombres entiers compris entre [min] et [max] par défaut 1 nombre entre 1 et 10\n'
+        help += 'timer [add] [min] [nom] créé un timer de [min] minutes avec [nom] en nom\n'
+        help += 'timer [stop] [nom] stop le timer [nom]\n'
         msg.channel.send(help)
     }
 
