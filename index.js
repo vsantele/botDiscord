@@ -336,8 +336,9 @@ client.on('message', async msg => {
             switch(args[1]) {
                 case "add":
                     const name = args.length > 3 ? args[3] : timer.size
-                    let time = args.length > 2 ?  args[2] : 5
+                    let time = args.length > 2 ?  parseFloat(args[2]) : 5
                     time = typeof time === 'number' ? time : 5
+                    console.log('timer: :', name, time);
                     msg.channel.send(`Le timer ${name} est lancé pour ${time} minutes`)
                     delay(name, time).then((timerName) => {
                         msg.channel.send(`BIP BIP BIP ${timerName} est fini`)
