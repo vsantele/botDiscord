@@ -19,6 +19,8 @@ const prefix = "!"
 const queue = new Map();
 let volume = 1;
 
+const timer = new Map()
+
 require('dotenv').config();
 const Genius = new genius.Client(process.env.GENIUS_TOKEN)
 const lngDetector = new LanguageDetect();
@@ -160,6 +162,13 @@ const lyrics = async (track) => {
         }
     }
 }
+async function delay(name, delayInMin) {
+    return new Promise(resolve  => {
+      timer.set(name,setTimeout(() => {
+        resolve(name);
+      }, delayInMin * 60000));
+    });
+  }
 
 function generateOutputFile(channel, member) {
     // use IDs instead of username cause some people have stupid emojis in their name
@@ -359,6 +368,34 @@ client.on('message', async msg => {
                 }
             })
         }
+    } else if (msg.content.toLowerCase().startsWith('timer')) {
+        const args = msg.content.split(' ')
+        if(args.length > 2) {
+            switch(args[1]) {
+                case "add":
+                    const name = args.length > 3 ? args[3] : timer.size
+                    let time = args.length > 2 ?  parseFloat(args[2]) : 5
+                    time = typeof time === 'number' ? time : 5
+                    console.log('timer: :', name, time);
+                    msg.channel.send(`Le timer ${name} est lancé pour ${time} minutes`)
+                    delay(name, time).then((timerName) => {
+                        msg.channel.send(`BIP BIP BIP ${timerName} est fini`)
+                        timer.delete(timerName)
+                    })
+                    break;
+                case 'stop':
+                    if(args.length > 2 && timer.has(args[2])) {
+                        clearTimeout(timer.get(args[2]))
+                        msg.channel.send('Le timer a été enlever')
+                    } else {
+                        msg.channel.send(`le timer n'exite pas`)
+                    }
+                    break;
+                default:
+                    msg.channel.send("Commande non valide...")
+            }
+            
+        }
     } else if (msg.content.startsWith('rec')) {
         const voiceChannel = msg.member.voiceChannel
         //console.log(voiceChannel.id);
@@ -486,9 +523,11 @@ client.on('message', async msg => {
         help += '!play: joue une musique depuis un lien youtube\n'
         help += '!skip: passe à la chason suivante de la playlist\n'
         help += '!stop: supprime la playlist en cours et fait quitter le bot du channel vocal\n'
-        help += '!volume [0-200]: change le volume'
+        help += '!volume [0-200]: change le volume\n'
         help += 'et ça fait: BIM BAM BOOM\n'
-        help += 'random [min] [max] [nb]: tire [nb] nombres entiers compris entre [min] et [max] par défaut 1 nombre entre 1 et 10'
+        help += 'random [min] [max] [nb]: tire [nb] nombres entiers compris entre [min] et [max] par défaut 1 nombre entre 1 et 10\n'
+        help += 'timer [add] [min] [nom] créé un timer de [min] minutes avec [nom] en nom\n'
+        help += 'timer [stop] [nom] stop le timer [nom]\n'
         msg.channel.send(help)
     }
 
