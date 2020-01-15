@@ -14,6 +14,9 @@ const ytdl = require('ytdl-core');
 const RandomOrg = require('random-org')
 const cheerio = require('cheerio')
 const LanguageDetect = require('languagedetect');
+const snowboy = require('snowboy')
+const Detector = snowboy.Detector
+const Models = snowboy.Models
 const prefix = "!"
 
 const queue = new Map();
