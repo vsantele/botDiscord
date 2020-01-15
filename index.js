@@ -12,6 +12,7 @@ const client = new Discord.Client();
 const wikiquote = require('wikiquote')
 const ytdl = require('ytdl-core');
 const RandomOrg = require('random-org')
+const cheerio = require('cheerio')
 const LanguageDetect = require('languagedetect');
 const prefix = "!"
 
@@ -175,6 +176,42 @@ class Silence extends Readable {
     }
 }
 
+function getWord(word) {
+    return new Promise((resolve, reject) => {
+      request.get(`https://www.larousse.fr/dictionnaires/francais/${word}`, function (
+        error,
+        response,
+        data
+      ) {
+        if (error) {
+          reject(error)
+        } else {
+          const $ = cheerio.load(data);
+          if($('section.corrector > p').is('.err')) {
+            reject('Error, mot inconnu')
+          } else if ($('section').is('section.corrector')) {
+            console.log($('.corrector > ul').children().first().text())
+            resolve(getWord($('.corrector > ul').children().first().text()))
+          }else {
+            let definitions = []
+            $('.Definitions').children().each(function (i, elem) {
+              definitions.push($(this).text())
+            })
+            let locutions = []
+            $('.ListeLocutions').children().each(function (i, elem) {
+              locutions.push($(this).text())
+            })
+            resolve({
+              word,
+              definitions,
+              locutions
+            });
+          }
+        }
+      });
+    })
+  }
+
 client.on('ready', () => {
     isReady = true
     console.log(`Logged in as ${client.user.tag}!`);
@@ -184,7 +221,8 @@ client.on('ready', () => {
 //   channel.send('Hello World')
 client.on('message', async msg => {
     if (msg.author.bot) return;
-    const serverQueue = queue.get(msg.guild.id);
+    let serverQueue
+    if (msg.guild) serverQueue = queue.get(msg.guild.id);
     if (msg.content.toLowerCase() === 'ping') {
         msg.reply('pong');
     } else if (msg.content.toLowerCase() === 'pong') {
@@ -424,6 +462,21 @@ client.on('message', async msg => {
         const nbs = await random.generateIntegers({min: args[1] ? args[1] : 0, max: args[2] ? args[2] : 10, n: args[3] ? args[3] : 1});
         // console.log('nbs :', nbs);
         msg.channel.send(nbs.random.data.join(' '))
+    } else if (msg.content.toLowerCase().startsWith('definition') || msg.content.toLowerCase().startsWith('définition') || msg.content.toLowerCase().startsWith('def')) {
+        const args = msg.content.split(' ');
+        try {
+            let defs = await getWord(args[1])
+            let res = `${defs.word}: \n  Définition${defs.definitions.length > 1 ? 's' : ''}:\n`
+            defs.definitions.forEach((def) => {res +='  - ' + def + '\n'})
+            if (defs.locutions.length > 1) {
+                res += `  Locution${defs.locutions.length > 1 ? 's' : ''}:\n`
+                defs.locutions.forEach((loc) => {res += '  - ' +loc + '\n'})
+            }
+            msg.channel.send(res)
+        } catch (e) {
+            console.error('e :', e);
+            msg.channel.send(e)
+        }
     } else if (msg.content.toLowerCase() === 'help') {
         let help = 'Liste des commandes: \n'
         help += 'chat: envoie une photo de chat\n'
