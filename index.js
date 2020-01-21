@@ -385,7 +385,7 @@ client.on('message', async msg => {
                             msg.member.voiceChannel.join().then(async con => {
                                 dispatcher = con.playFile('./songs/bip.mp3')
                                 dispatcher.on("end", end => {
-                                    voiceChan.leave()
+                                    msg.member.voiceChannel.leave()
                                     isReady = true
                                 })
                             })
