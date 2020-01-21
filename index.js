@@ -380,6 +380,16 @@ client.on('message', async msg => {
                     msg.channel.send(`Le timer ${name} est lancé pour ${time} minutes`)
                     delay(name, time).then((timerName) => {
                         msg.channel.send(`BIP BIP BIP ${timerName} est fini`)
+                        if (isReady && msg.member.voiceChannel) {
+                            isReady = false
+                            msg.member.voiceChannel.join().then(async con => {
+                                dispatcher = con.playFile('./songs/bip.mp3')
+                                dispatcher.on("end", end => {
+                                    voiceChan.leave()
+                                    isReady = true
+                                })
+                            })
+                        }
                         timer.delete(timerName)
                     })
                     break;
