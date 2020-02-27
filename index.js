@@ -14,6 +14,7 @@ const ytdl = require('ytdl-core');
 const RandomOrg = require('random-org')
 const cheerio = require('cheerio')
 const LanguageDetect = require('languagedetect');
+var exec = require('child_process').exec;
 const prefix = "!"
 
 const queue = new Map();
@@ -539,8 +540,17 @@ client.on('message', async msg => {
         help += 'timer add [min] [nom] créé un timer de [min] minutes avec [nom] en nom\n'
         help += 'timer stop [nom] stop le timer [nom]\n'
         msg.channel.send(help)
-    }
+    } else if (msg.channel.type == 'dm' && msg.author.username === "WolfVic" ) {
+        if (msg.content.toLowerCase().startsWith() === "git") {
+            let args = msg.content.toLowerCase().split(' ')
+            if (args.length > 2 && args[1] == 'update') {
+                if (args[2] == 'ms') exec("~/updateMS.sh")
+                else if (args[2] == 'ml') exec('~/updateML.sh')
+            }
 
+        }
+    }
+    console.log(msg.channel.type)
 });
 
 async function execute(msg, serverQueue) {
