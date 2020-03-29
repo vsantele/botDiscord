@@ -1,0 +1,7 @@
+module.exports = {
+  name: 'commands',
+  description: 'Descriptions',
+  execute(message, args) {
+    // Code here
+  }
+}
