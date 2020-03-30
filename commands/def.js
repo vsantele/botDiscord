@@ -7,11 +7,11 @@ module.exports = {
   usage: '<mot>',
   async execute(message, args) {
     try {
-      const res = await dict(args[1])
-      msg.channel.send(res)
+      const res = await dict(args[0])
+      message.channel.send(res, {split: true})
     } catch (e) {
       console.error('e :', e);
-      msg.channel.send(`Il y a eu une erreur...`)
+      message.channel.send(`Il y a eu une erreur...`)
     }
   }
 }

@@ -12,6 +12,7 @@ class AudioController {
       volume: 0.5,
       playing: true,
     }
+    this.rec = false
   }
 
   async execute(message, song) {
@@ -33,6 +34,7 @@ class AudioController {
         // console.log('connection :', connection);
         this.queue.connection = connection;
         this.play(this.queue.songs[0]);
+        return
       } catch (err) {
         throw new Error(err.message)
       }
@@ -46,18 +48,19 @@ class AudioController {
   skip(message) {
     if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music!');
     if (!this.queue) return message.channel.send('There is no song that I could skip!');
-    this.queue.connection.dispatcher.destroy();
+    if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
   }
   stop(message) {
     if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music!');
     this.queue.songs = [];
-    this.queue.connection.dispatcher.destroy();
-    this.queue.voiceChannel.leave();
+    if (!this.rec) {
+      if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
+    }
   }
   play(song) {
     try {
       if (!song) {
-        this.queue.voiceChannel.leave();
+        if (!this.rec) this.queue.voiceChannel.leave();
         return;
       }
       console.log(song);
@@ -79,6 +82,9 @@ class AudioController {
           break;
         case "stream":
           dispatcher = this.queue.connection.play(song.src)
+          break;
+        case "silence":
+          dispatcher = this.queue.connection.play(song.src, {type: 'opus'})
       }
       dispatcher
         .on("finish", () => {
