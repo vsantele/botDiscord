@@ -1,7 +1,32 @@
+const rec = require('../modules/audio/snowboy').rec
+const fs = require('fs')
+
+const { Readable } = require('stream');
+class Silence extends Readable {
+  _read() {
+    this.push(Buffer.from([0xF8, 0xFF, 0xFE]));
+  }
+}
+
 module.exports = {
   name: 'rec',
   description: 'enregistre la voix des personnes dans le channel',
-  execute(message, args) {
+  async execute(message, args, audio) {
+    if (!audio.queue.songs.length) {
+      const song = {
+        title: 'Silence',
+        src: new Silence(),
+        type: 'silence'
+      }
+      await audio.execute(message, song)
+    }
+    let audioR
+    console.log("before ready")
+    console.log("ready")
+    audioR = audio.queue.connection.receiver.createStream(message.author, { mode: 'pcm' })
+    audioR.pipe(fs.createWriteStream('./test.raw'))
+    rec(audioR)
+    // audioR.on('end', () => audioR = null)
     //! A refaire...
     // const voiceChannel = message.member.voice.channel
     // //console.log(voiceChannel.id);
