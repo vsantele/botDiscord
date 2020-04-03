@@ -110,7 +110,7 @@ class AudioController {
   }
   getQueue() {
     let result = `Prochaines musiques à jouer:\n`
-    this.queue.songs.foreach((song, index) => {
+    this.queue.songs.forEach((song, index) => {
       result += `${index +1}. ${song.title}`
     })
     return result
