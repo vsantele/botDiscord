@@ -1,12 +1,20 @@
 const ytdl = require("ytdl-core");
+const search = require('../modules/audio/search').youtube
 
 module.exports = {
   name: 'play',
   description: 'lance une vidéo youtube dans le bot',
   async execute(message, args, audio) {
     try {
-      
-      const songInfo = await ytdl.getInfo(args[0]);
+      let url
+      const regexYT = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/
+      if (regexYT.test(args[0])) {
+        url = args[0]
+      } else {
+        let result = await search(args.join(' '))
+        url = result.items[0].id.videoId
+      }
+      const songInfo = await ytdl.getInfo(url);
       const song = {
         title: songInfo.title,
         src: songInfo.video_url,
