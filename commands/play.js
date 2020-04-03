@@ -7,9 +7,10 @@ module.exports = {
   async execute(message, args, audio) {
     try {
       let url
-      const regexYT = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/
-      if (regexYT.test(args[0])) {
-        url = args[0]
+      const regexYT = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?/
+      let res = args[0].match(regexYT)
+      if (res !== null) {
+        url = res[0]
       } else {
         let result = await search(args.join(' '))
         console.log(result.items)
