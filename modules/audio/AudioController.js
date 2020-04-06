@@ -96,6 +96,7 @@ class AudioController {
           console.error(error);
         });
       dispatcher.setVolumeLogarithmic(this.queue.volume);
+      this.queue.textChannel.send(`${this.queue.songs[0].title} est en train d'être joué`)
     } catch (err){
       console.error(err)
       this.queue.textChannel.send(`Une erreur est survenur lors de la lecture...`)
@@ -106,6 +107,14 @@ class AudioController {
     vol /= 100
     this.queue.volume = vol
     if (this.queue.connection) this.queue.connection.dispatcher.setVolumeLogarithmic(Math.min(2, Math.max(0,vol)))
+  }
+  getQueue() {
+    let result = `Prochaines musiques à jouer:\n`
+    this.queue.songs.forEach((song, index) => {
+      if (index === 0) return
+      result += `${index}. ${song.title}\n`
+    })
+    return result
   }
 } 
 
