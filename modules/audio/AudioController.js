@@ -96,7 +96,7 @@ class AudioController {
           console.error(error);
         });
       dispatcher.setVolumeLogarithmic(this.queue.volume);
-      this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
+      if (this.queue[0].title != 'Rick Roll') this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
     } catch (err){
       console.error(err)
       this.queue.textChannel.send(`Une erreur est survenur lors de la lecture...`)
