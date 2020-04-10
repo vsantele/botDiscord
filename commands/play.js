@@ -22,7 +22,7 @@ module.exports = {
         src: songInfo.video_url,
         type: 'youtube'
       };
-      audio.execute(message, { title: 'Rick Roll', src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', type: 'youtube'})
+      // audio.execute(message, { title: 'Rick Roll', src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', type: 'youtube'})
       audio.execute(message, song);
     } catch (err) {
       console.error(err)

@@ -24,7 +24,6 @@
     "got": "^10.7.0",
     "ibm-watson": "^5.4.0",
     "languagedetect": "^2.0.0",
-    "node-libsamplerate": "^1.0.0",
     "nodemw": "^0.12.2",
     "prism-media": "^1.2.1",
     "rand-token": "^1.0.1",
