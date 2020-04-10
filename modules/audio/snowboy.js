@@ -3,17 +3,34 @@ const wav = require('wav');
 const path = require('path')
 const Detector = require('snowboy').Detector;
 const Models = require('snowboy').Models;
+// const SampleRate = require('node-libsamplerate')
+
+// const options = {
+//   type: SampleRate.SRC_SINC_FASTEST,
+//   channels: 1,
+//   fromRate: 48000,
+//   fromDepth: 16,
+//   toRate: 16000,
+//   toDepth: 16
+// }
+// const resampler = new SampleRate(options)
+
+// const SoxCommand = require('sox-audio')
+// const command = SoxCommand()
+const sox = require('sox-stream')
 
 const models = new Models();
 
 models.add({
   file: path.join(__dirname,'resources/models/Gladys.pmdl'),
+  // file: path.join(__dirname, 'resources/models/snowboy.umdl'),
   sensitivity: '0.7',
-  hotwords: 'gladys'
+  hotwords: 'snowboy'
 });
 
 const detector = new Detector({
-  resource: path.join(__dirname,"resources/common.res"),
+  // resource: path.join(__dirname,"resources/common.res"),
+  resource: 'node_modules/snowboy/resources/common.res',
   models: models,
   audioGain: 1.0,
   applyFrontend: false
@@ -49,7 +66,30 @@ detector.on('hotword', function (index, hotword, buffer) {
 
 
 function rec(stream) {
-  stream.pipe(detector)
+  console.log(detector.sampleRate())
+  console.log(detector.numChannels())
+  console.log(detector.bitsPerSample())
+  // command.input(stream).inputSampleRate(48000).inputEncoding('signed').inputBits(16).inputChannels(2).inputFileType('raw')
+  //   .outputSampleRate(16000).outputEncoding('signed').outputBits(16).outputChannels(1).inputFileType('raw')
+  //   .output(detector)
+  // command.run()
+  stream.pipe(sox({
+    input: {
+      type: 'raw',
+      rate: 48000,
+      encoding: 'signed',
+      channels: 2,
+      bits: 16
+    },
+    output: {
+      type: 'raw',
+      rate: 16000,
+      encoding: 'signed',
+      channels: 1,
+      bits: 16
+    }
+  })).pipe(detector)
+  // stream.pipe(resampler).pipe(detector)
 }
 
 module.exports = {
