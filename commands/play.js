@@ -14,7 +14,6 @@ module.exports = {
         url = res[0]
       } else {
         let result = await search(args.join(' '))
-        console.log(result.items)
         url = result.items[0].id.videoId
       }
       const songInfo = await ytdl.getInfo(url);
