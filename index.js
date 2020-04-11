@@ -2,8 +2,11 @@ const fs = require("fs")
 const Discord = require('discord.js');
 const { prefix } = require('./config.json')
 const AudioController = require('./modules/audio/AudioController.js').AudioController
+const events = require('events')
 
 const path = require("path")
+
+const audioEvents = new events.EventEmitter()
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection()
@@ -48,11 +51,11 @@ client.on('message', async message => {
   }
 
   if (command.users && !command.users.includes(message.author.id)) {
-    return message.reply(`Tu n'as pas le droit d'utiliser la commande ${command.name}!`)
+    return message.reply(`Tu n'as pas le droit d'utiliser la commande \`${command.name}\`!`)
   }
 
   if (!audios.has(message.guild.id)) {
-    audios.set(message.guild.id, new AudioController(message))
+    audios.set(message.guild.id, new AudioController(message, audioEvents))
   }
   const audioQueue = audios.get(message.guild.id)
 
@@ -76,11 +79,20 @@ client.on('message', async message => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
 
   try {
-    command.execute(message, args, audioQueue)
+    command.execute(message, args, {audio: audioQueue})
   } catch (err) {
     console.error(err)
     message.reply('Il y a eu une erreur...')
   }
 });
+
+function deleteAudioController(guildId) {
+  if (audios.has(guildId)) {
+    console.log(`${guildId} a été suprimmé`)
+    audios.delete(guildId)
+  }
+}
+
+audioEvents.on('delete', deleteAudioController)
 
 client.login(token);

@@ -12,7 +12,8 @@ class Silence extends Readable {
 module.exports = {
   name: 'rec',
   description: 'enregistre la voix des personnes dans le channel',
-  async execute(message, args, audio) {
+  async execute(message, args, options) {
+    const { audio } = options
     if (!audio.queue.songs.length) {
       const song = {
         title: 'Silence',

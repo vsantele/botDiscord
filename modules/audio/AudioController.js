@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const fs = require('fs')
 
 class AudioController {
-  constructor(message) {
+  constructor(message, event) {
     this.guildID = message.guild.id;
     this.queue = {
       textChannel: message.channel,
@@ -13,6 +13,7 @@ class AudioController {
       playing: true,
     }
     this.rec = false
+    this.event = event
   }
 
   async execute(message, song) {
@@ -60,7 +61,11 @@ class AudioController {
   play(song) {
     try {
       if (!song) {
-        if (!this.rec) this.queue.voiceChannel.leave();
+        if (!this.rec) {
+          this.queue.voiceChannel.leave();
+          this.event.emit('delete', this.guildID)
+        }
+
         return;
       }
       console.log(song);
@@ -100,7 +105,7 @@ class AudioController {
       this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
     } catch (err){
       console.error(err)
-      this.queue.textChannel.send(`Une erreur est survenur lors de la lecture...`)
+      this.queue.textChannel.send(`Une erreur est survenue lors de la lecture...`)
     }
     
   }

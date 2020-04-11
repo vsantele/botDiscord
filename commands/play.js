@@ -4,8 +4,9 @@ const search = require('../modules/audio/search').youtube
 module.exports = {
   name: 'play',
   description: 'lance une vidéo youtube dans le bot',
-  async execute(message, args, audio) {
+  async execute(message, args, options) {
     try {
+      const {audio} = options
       let url
       const regexYT = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?/
       let res = args[0].match(regexYT)

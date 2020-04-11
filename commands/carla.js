@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
   name: 'carla',
   description: 'Joue Bim Bam toi',
-  execute(message, args, audio) {
+  execute(message, args, options) {
+    const { audio } = options
     message.channel.send("et ça fait\nBIM BAM BOUM!")
     const song = {
       title: "Carla - Bim Bam toi",
