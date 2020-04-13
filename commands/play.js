@@ -14,7 +14,8 @@ module.exports = {
         url = res[0]
       } else {
         let result = await search(args.join(' '))
-        url = result.items[0].id.videoId
+        if (result.items.length) url = result.items[0].id.videoId
+        else throw "No result"
       }
       const songInfo = await ytdl.getInfo(url);
       const song = {
@@ -26,6 +27,7 @@ module.exports = {
       audio.execute(message, song);
     } catch (err) {
       console.error(err)
+      if (err === "No result") return message.channel.send(`Pas de résultat...`)
       message.channel.send(`Il y a eu une erreur avec la commande ${this.name}`)
     }
   }
