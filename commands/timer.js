@@ -19,9 +19,9 @@ async function timer(message, args) {
       let time = args.length >= 2 ? parseFloat(args[1]) : 5
       time = typeof time === 'number' ? time : 5
       console.log('timer: :', name, time);
-      msg = `Le timer ${name} est lancé pour ${time} minutes`
+      msg = `Le timer \`${name}\` est lancé pour ${time} minute${time > 1 ? 's' : ''}`
       delay(name, time).then((timerName) => {
-        message.channel.send(`BIP BIP BIP ${timerName} est fini`)
+        message.channel.send(`BIP BIP BIP! Le timer \`${timerName}\` est fini`)
       })
       break;
     case 'stop':
@@ -29,7 +29,7 @@ async function timer(message, args) {
         clearTimeout(timer.get(args[1]))
         msg = 'Le timer a été enlevé'
       } else {
-        msg = `le timer n'exite pas`
+        msg = `Le timer n'exite pas`
       }
       break;
     default:
