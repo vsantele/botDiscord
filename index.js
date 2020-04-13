@@ -1,7 +1,7 @@
 const fs = require("fs")
 const Discord = require('discord.js');
 const { prefix } = require('./config.json')
-const AudioController = require('./modules/audio/AudioController.js').AudioController
+const AudioController = require('./modules/audio/AudioController.js')
 const events = require('events')
 
 const path = require("path")

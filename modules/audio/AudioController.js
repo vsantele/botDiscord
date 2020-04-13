@@ -122,8 +122,9 @@ class AudioController {
     })
     return result
   }
+  changeQueue(queue) {
+    this.queue.songs = queue;
+  }
 } 
 
-module.exports = {
-  AudioController
-}
+module.exports = AudioController
