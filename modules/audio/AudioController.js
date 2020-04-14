@@ -123,7 +123,11 @@ class AudioController {
     return result
   }
   changeQueue(queue) {
-    this.queue.songs = queue;
+    if (queue[0].src === this.queue.songs[0].src) {
+      this.queue.songs = queue;
+    } else {
+      throw 'You cannot change the first song...'
+    }
   }
 } 
 

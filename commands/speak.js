@@ -5,7 +5,8 @@ const bufferToReadable = require('../modules/bufferToReadable')
 module.exports = {
   name: 'speak',
   description: 'TTS avec Voicerrs',
-  execute(message, args, audio) {
+  execute(message, args, options) {
+    const {audio} = options
     voicerss.speech({
       key: process.env.VOICERSS_KEY,
       hl: 'fr-fr',
