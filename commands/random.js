@@ -6,6 +6,8 @@ module.exports = {
   args: true,
   usage: '<min> <max> <nb>',
   async execute(message, args) {
-    message.channel.send(await random(args))
+    let result = await random(args)
+    console.log(result)
+    message.channel.send(`le${args[2] > 1 ? "s " + args[2] : ""} nombre${args[2] > 1 ? 's' : ''} entre ${args[0]} et ${args[1]} aléatoire${args[2] > 1 ? 's' : ''} ${args[2] > 1 ? 'sont' : 'est'}: \n ${result}`)
   }
 }

@@ -7,11 +7,12 @@ const randomOrg = new RandomOrg({
 })
 
 async function random(args) {
-  return randomOrg.generateIntegers({
+  let result = await randomOrg.generateIntegers({
     min: args[0] ? args[0] : 0,
     max: args[1] ? args[1] : 10,
     n: args[2] ? args[2] : 1
   });
+  return result.random.data
 }
 
 module.exports = {
