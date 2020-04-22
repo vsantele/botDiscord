@@ -22,6 +22,7 @@
     "google-auth-library": "^6.0.0",
     "googleapis": "^48.0.0",
     "got": "^10.7.0",
+    "https-proxy-agent": "^5.0.0",
     "ibm-watson": "^5.4.0",
     "languagedetect": "^2.0.0",
     "nodemw": "^0.12.2",
