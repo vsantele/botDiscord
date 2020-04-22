@@ -1,5 +1,11 @@
 const ytdl = require('ytdl-core');
 const fs = require('fs')
+const HttpsProxyAgent = require('https-proxy-agent')
+
+const agent = HttpsProxyAgent({
+  host: '54.37.14.65',
+  port: 3129
+})
 
 class AudioController {
   constructor(message, event) {
@@ -72,7 +78,7 @@ class AudioController {
       let dispatcher;
       switch (song.type) {
         case "youtube":
-          dispatcher = this.queue.connection.play(ytdl(song.src));
+          dispatcher = this.queue.connection.play(ytdl(song.src, {requestOptions: {agent}}));
           break;
         case "file":
           dispatcher = this.queue.connection.play(
