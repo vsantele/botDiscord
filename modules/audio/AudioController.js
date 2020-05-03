@@ -78,7 +78,9 @@ class AudioController {
       let dispatcher;
       switch (song.type) {
         case "youtube":
-          dispatcher = this.queue.connection.play(ytdl(song.src, {requestOptions: {agent}}));
+          // const stream = ytdl(song.src, { requestOptions: { agent } });
+          const stream = ytdl(song.url, {type: "audioonly"})
+          dispatcher = this.queue.connection.play(stream);
           break;
         case "file":
           dispatcher = this.queue.connection.play(
