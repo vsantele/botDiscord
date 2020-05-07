@@ -55,13 +55,13 @@ class AudioController {
   skip(message) {
     if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
     if (!this.queue) return message.channel.send(`Il n'y a rien à passer!`);
-    if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
+    if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
   }
   stop(message) {
     if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
     this.queue.songs = [];
     if (!this.rec) {
-      if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
+      if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
     }
   }
   play(song) {
@@ -108,7 +108,7 @@ class AudioController {
           console.error(error);
         });
       dispatcher.setVolumeLogarithmic(this.queue.volume);
-      if (this.queue.songs[0].type === "file " || this.queue.songs[0] === "youtube") {
+      if (this.queue.songs[0].type === "file " || this.queue.songs[0].type === "youtube") {
         this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
       } 
     } catch (err){
@@ -121,6 +121,15 @@ class AudioController {
     vol /= 100
     this.queue.volume = vol
     if (this.queue.connection) this.queue.connection.dispatcher.setVolumeLogarithmic(Math.min(2, Math.max(0,vol)))
+  }
+  pause() {
+    if (this.queue.connection && this.queue.connection.dispatcher) {
+      if (this.queue.connection.dispatcher.paused) this.queue.connection.dispatcher.resume()
+      else this.queue.connection.dispatcher.pause()
+    }
+  }
+  resume() {
+    if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.resume()
   }
   getQueue() {
     let result = `Prochaines musiques à jouer:\n`
