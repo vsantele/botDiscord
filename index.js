@@ -79,10 +79,10 @@ client.on('message', async message => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
 
   try {
-    command.execute(message, args, {audio: audioQueue})
+    await command.execute(message, args, {audio: audioQueue})
   } catch (err) {
     console.error(err)
-    message.reply('Il y a eu une erreur...')
+    message.reply(`Il y a eu une erreur avec la commande \`${command.name}\``)
   }
 });
 

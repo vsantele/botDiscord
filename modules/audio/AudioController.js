@@ -24,13 +24,13 @@ class AudioController {
 
   async execute(message, song) {
     const voiceChannel = message.member.voice.channel
-    if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
+    if (!voiceChannel) return message.channel.send('Vous devez être dans un channel vocal pour diffuser quelque chose!');
     const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-      return message.channel.send('I need the permissions to join and speak in your voice channel!');
+      return message.channel.send(`J'ai besoin de permissions pour pouvoir me connecter et parler!`);
     }
     if (this.queue.voiceChannel === null) this.queue.voiceChannel = voiceChannel;
-    
+    this.queue.textChannel = message.channel
   
     if (!this.queue.songs.length) {  
       this.queue.songs.push(song);
@@ -48,17 +48,17 @@ class AudioController {
     } else {
       this.queue.songs.push(song);
       console.log(this.queue.songs);
-      return message.channel.send(`${song.title} has been added to the queue!`);
+      return message.channel.send(`${song.title} a été ajouté à la file d'attente!`);
     }
   }
 
   skip(message) {
-    if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music!');
-    if (!this.queue) return message.channel.send('There is no song that I could skip!');
+    if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
+    if (!this.queue) return message.channel.send(`Il n'y a rien à passer!`);
     if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
   }
   stop(message) {
-    if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music!');
+    if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
     this.queue.songs = [];
     if (!this.rec) {
       if (this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
@@ -71,7 +71,6 @@ class AudioController {
           this.queue.voiceChannel.leave();
           this.event.emit('delete', this.guildID)
         }
-
         return;
       }
       console.log(song);
@@ -109,8 +108,9 @@ class AudioController {
           console.error(error);
         });
       dispatcher.setVolumeLogarithmic(this.queue.volume);
-      // if (this.queue[0].title != 'Rick Roll') 
-      this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
+      if (this.queue.songs[0].type === "file " || this.queue.songs[0] === "youtube") {
+        this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
+      } 
     } catch (err){
       console.error(err)
       this.queue.textChannel.send(`Une erreur est survenue lors de la lecture...`)
@@ -134,7 +134,7 @@ class AudioController {
     if (queue[0].src === this.queue.songs[0].src) {
       this.queue.songs = queue;
     } else {
-      throw 'You cannot change the first song...'
+      throw new Error('You cannot change the first song...')
     }
   }
 } 

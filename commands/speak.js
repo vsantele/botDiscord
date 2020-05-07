@@ -1,33 +1,22 @@
-const voicerss = require("../voicerrs")
+
 require('dotenv').config();
-const bufferToReadable = require('../modules/bufferToReadable')
+const speak = require('../modules/audio/speak.js')
 
 module.exports = {
   name: 'speak',
   description: 'TTS avec Voicerrs',
-  execute(message, args, options) {
-    const {audio} = options
-    voicerss.speech({
-      key: process.env.VOICERSS_KEY,
-      hl: 'fr-fr',
-      src: args.join(' '),
-      r: 0,
-      c: 'mp3',
-      f: '44khz_16bit_stereo',
-      ssml: false,
-      b64: false,
-      callback: function (error, buffer) {
-        if (error) {
-          return console.error('error: ', error.toString())
-        }
-        const readable = bufferToReadable(buffer)
-        const song = {
-          title: "Speak!",
-          src: readable,
-          type: "stream"
-        };
-        audio.execute(message, song)
-      }
-    })
+  async execute(message, args, options) {
+    try {
+      const {audio} = options
+      const src = await speak(args.join(' '), 'fr-fr')
+      const song = {
+        title: "",
+        src: src,
+        type: "stream"
+      };
+      audio.execute(message, song)
+    } catch (err) {
+      throw err
+    }
   }
 }
