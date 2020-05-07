@@ -8,12 +8,22 @@ const lyrics = async (track) => {
   if (track.length > 2) {
       try {
           console.log('track :', track);
-          const search = await Genius.findTrack(track)
-          const info = await Genius.getAll(search)
-          const lyrics = info.lyrics.split('\n').filter(line => !line.startsWith('[')).join('\n')
-          res[0] = lyrics
-          res[1] = info.full_title
-          return res
+        const songs = await Genius.tracks.search(track, { limit: 1 })
+        const song = songs[0]
+        const lyrics = await song.lyrics()
+        const infos = {
+          titles: song.titles,
+          image: song.image,
+          url: song.url,
+          artist: song.artist,
+          album: song.album,
+          releasedAt: song.releasedAt
+        }
+        //.split('\n').filter(line => !line.startsWith('[')).join('\n')
+        res[0] = lyrics
+        res[1] = song.titles.full
+        res[2] = infos
+        return res
       } catch (error) {
           throw new Error(error)
       }
