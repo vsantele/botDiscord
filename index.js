@@ -4,6 +4,8 @@ const { prefix } = require('./config.json')
 const AudioController = require('./modules/audio/AudioController.js')
 const events = require('events')
 
+const Database = require('./database')
+
 const path = require("path")
 
 const audioEvents = new events.EventEmitter()
@@ -24,6 +26,8 @@ const token = process.env.TOKEN_DISCORD;
 const audios = new Discord.Collection()
 
 const cooldowns = new Discord.Collection()
+
+Database.load()
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -79,7 +83,7 @@ client.on('message', async message => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
 
   try {
-    await command.execute(message, args, {audio: audioQueue})
+    await command.execute(message, args, {audio: audioQueue, client: client})
   } catch (err) {
     console.error(err)
     message.reply(`Il y a eu une erreur avec la commande \`${command.name}\``)

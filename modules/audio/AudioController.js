@@ -80,6 +80,7 @@ class AudioController {
           // const stream = ytdl(song.src, { requestOptions: { agent } });
           const stream = ytdl(song.src, {type: "audioonly"})
           dispatcher = this.queue.connection.play(stream);
+          dispatcher.setVolumeLogarithmic(this.queue.volume);
           break;
         case "file":
           dispatcher = this.queue.connection.play(
@@ -88,15 +89,19 @@ class AudioController {
               type: "ogg/opus"
             }
           );
+          dispatcher.setVolumeLogarithmic(1.5)
           break;
         case "broadcast":
           dispatcher = this.queue.connection.play(song.src)
+          dispatcher.setVolumeLogarithmic(this.queue.volume);
           break;
         case "stream":
           dispatcher = this.queue.connection.play(song.src)
+          dispatcher.setVolumeLogarithmic(this.queue.volume);
           break;
         case "silence":
-          dispatcher = this.queue.connection.play(song.src, {type: 'opus'})
+          dispatcher = this.queue.connection.play(song.src, { type: 'opus' })
+          dispatcher.setVolumeLogarithmic(this.queue.volume);
       }
       dispatcher
         .on("finish", () => {
@@ -107,7 +112,7 @@ class AudioController {
         .on("error", error => {
           console.error(error);
         });
-      dispatcher.setVolumeLogarithmic(this.queue.volume);
+      
       if (this.queue.songs[0].type === "file " || this.queue.songs[0].type === "youtube") {
         this.queue.textChannel.send(`"${this.queue.songs[0].title}" est en train d'être joué`)
       } 
@@ -125,7 +130,7 @@ class AudioController {
   pause() {
     if (this.queue.connection && this.queue.connection.dispatcher) {
       if (this.queue.connection.dispatcher.paused) this.queue.connection.dispatcher.resume()
-      else this.queue.connection.dispatcher.pause()
+      else this.queue.connection.dispatcher.pause(true)
     }
   }
   resume() {

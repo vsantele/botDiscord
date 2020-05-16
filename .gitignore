@@ -72,3 +72,5 @@ test.js
 youtube.js
 recordings/
 test.raw
+
+*.db

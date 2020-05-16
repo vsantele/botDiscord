@@ -25,6 +25,7 @@
     "https-proxy-agent": "^5.0.0",
     "ibm-watson": "^5.5.0",
     "languagedetect": "^2.0.0",
+    "nedb": "^1.8.0",
     "nodemw": "^0.13.0",
     "prism-media": "^1.2.2",
     "rand-token": "^1.0.1",
