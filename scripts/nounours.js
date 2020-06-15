@@ -72,7 +72,14 @@ const Database = require('../database')
 async function main() {
   
   Database.load()
-  return Database.write('nounours', songs)
+  // return Database.write('nounours', songs)
+  Database.read.search('nounours', "accélere").then(row => {
+    console.log(row)
+    Database.remove('nounours', row._id)
+  }).catch(console.error)
+  // return Database.read.all('nounours').then(rows => rows.forEach(row => {
+  //   Database.update('nounours', row._id, { type: "file"})
+  // }))
 
 }
 

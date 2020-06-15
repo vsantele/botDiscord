@@ -1,44 +1,30 @@
 const db = require('./db');
 
-function all(dbName) {
+function all(dbName, options = {title: 1}) {
   return new Promise((resolve, reject) => {
-    switch (dbName) {
-      case "nounours":
-        db.nounours.find({}).sort({title: 1}).exec((err, docs) => {
-          if (err) return reject(err);
-          return resolve(docs)
-        })
-        break;
-      case "servers":
-        db.servers.find({}, (err, docs) => {
-          if (err) return reject(err);
-          return resolve(docs)
-        })
-        break;
-      default:
-        reject(new Error("Unknown database"))
+    if (exist(dbName)) {
+      if (dbName == "servers") options = {}
+      db[dbName].find({}).sort(options).exec((err, docs) => {
+        if (err) return reject(err);
+        return resolve(docs)
+      })
     }
+    reject(new Error("Unknown database"))
   })
 }
 
 function search(dbName, value) {
-  return new Promise((resolve, reject) => {
-    switch (dbName) {
-      case "nounours":
-        db.nounours.findOne({
-          keywords: value
-        }, (err, docs) => {
-          if (err) return reject(err);
-          return resolve(docs)
-        })
-        break;
-      case "servers":
-        reject(new Error("Not implemented yet"))
-        break;
-      default:
-        reject(new Error("Unknown database"))
-    }
-  })
+   return new Promise((resolve, reject) => {
+     if (exist(dbName)) {
+       db[dbName].find({}).findOne({
+         keywords: value
+       }, (err, docs) => {
+         if (err) return reject(err);
+         return resolve(docs)
+       })
+     }
+     reject(new Error("Unknown database"))
+   })
 }
 
 module.exports = {
