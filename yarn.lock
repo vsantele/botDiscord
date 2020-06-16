@@ -76,6 +76,13 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
+"@types/cheerio@^0.22.18":
+  version "0.22.18"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.18.tgz#19018dceae691509901e339d63edf1e935978fe6"
+  integrity sha512-Fq7R3fINAPSdUEhOyjG4iVxgHrOnqDJbY0/BUuiN0pvD/rfmZWekVZnv+vcs8TtpA2XF50uv50LaE4EnpEL/Hw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -343,6 +350,13 @@ axios@^0.18.0:
   dependencies:
     follow-redirects "1.5.10"
     is-buffer "^2.0.2"
+
+axios@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -1084,13 +1098,14 @@ gcp-metadata@^4.0.0:
     gaxios "^2.1.0"
     json-bigint "^0.3.0"
 
-genius-lyrics@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-2.0.1.tgz#8a50cabdaa5cfdbce2477d8fe024dc46252986a9"
-  integrity sha512-qojzQEpI+2wqmJxTeXfwILv1Cc2SGupIPQseWE//sWRxU9IzetjER0F4YSftJG7Dlv0D8C7r9LgHngg2/jiE+Q==
+genius-lyrics@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-3.0.0.tgz#69384608a16852683c83e3cbbc2cd7b1d7270b14"
+  integrity sha512-B2Um1u6G0rjf5R09ht31zguG7AFn7eFWBoMVxzITz533gnxtWVdIxrvRLFRQJ0em2Oonj7hTeRog0yanzUpqfQ==
   dependencies:
+    "@types/cheerio" "^0.22.18"
+    axios "^0.19.2"
     cheerio "^1.0.0-rc.3"
-    node-fetch "^2.6.0"
 
 get-stream@^5.1.0:
   version "5.1.0"
@@ -1646,6 +1661,14 @@ m3u8stream@^0.6.3:
     miniget "^1.6.1"
     sax "^1.2.4"
 
+m3u8stream@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/m3u8stream/-/m3u8stream-0.7.1.tgz#74b01a67ca248ac7bbdc263a65d9d8d2c479a65c"
+  integrity sha512-z6ldnAdhbuWOL6LmMkwptSZGzj+qbRytMKLTbNicwF/bJMjf9U9lqD57RNQUFecvWadEkzy6PDjcNJFFgi19uQ==
+  dependencies:
+    miniget "^1.6.1"
+    sax "^1.2.4"
+
 make-error@1.x:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.6.tgz#2eb2e37ea9b67c4891f684a1394799af484cf7a2"
@@ -1699,6 +1722,11 @@ miniget@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/miniget/-/miniget-1.7.0.tgz#a29eb79ebff479e9efafd271616981c603987875"
   integrity sha512-yrgaDSMRzrfYTkudB4Y6xK8pCb7oAH2bvfv6iPY2m6CedZfs9yK4b/ofh0Vzv08hCYXH/HHkoS8an6fkWtOAQA==
+
+miniget@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/miniget/-/miniget-1.7.2.tgz#f95eff50b78d798dddee2460c4aa3c72db1aa23a"
+  integrity sha512-USPNNK2bnHLOplX8BZVMehUkyQizS/DFpBdoH0TS+fM+hQoLNg9tWg4MeY9wE8gfY0pbzmx5UBEODujt3Lz8AA==
 
 minimatch@^3.0.4:
   version "3.0.4"
@@ -2790,14 +2818,14 @@ ytdl-core@^2.0.1:
     miniget "^1.7.0"
     sax "^1.1.3"
 
-ytdl-core@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-2.1.2.tgz#64003e5ac1907df3e92cf36771224811bd81698f"
-  integrity sha512-/tOT9Pka6nX+LuvzNLBU8AbVHe8XELn3aZ69mvCxzvwO/ty9k8cRvF6jXqti7l5M+0hf+UPpP9jYPSAFAuoBUA==
+ytdl-core@^2.1.2:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-2.1.7.tgz#d62c74161691a114de211145e645f30f607a5f96"
+  integrity sha512-ithllxxlt4zmJVTnYtT8/31QLv5MGlK3fSk29lx2S4eKc1BGh+ELKQEAkRJqWIf2P8TYBYrKwijx11xND4JcXw==
   dependencies:
     html-entities "^1.3.1"
-    m3u8stream "^0.6.3"
-    miniget "^1.7.0"
+    m3u8stream "^0.7.1"
+    miniget "^1.7.2"
     sax "^1.1.3"
 
 ytdl@^1.3.0:

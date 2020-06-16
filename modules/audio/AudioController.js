@@ -89,7 +89,7 @@ class AudioController {
               type: "ogg/opus"
             }
           );
-          dispatcher.setVolumeLogarithmic(1.5)
+          dispatcher.setVolumeLogarithmic(1)
           break;
         case "broadcast":
           dispatcher = this.queue.connection.play(song.src)

@@ -18,7 +18,7 @@ module.exports = {
       message.channel.send(res)
     } else {
       const name = args.join(" ")
-      const phrase = await search("nounours", name)
+      const phrase = await search("nounours", {keywords: name})
       if (!phrase) return message.channel.send(`\`${name}\` n'existe pas encore...`)
       const song = {
         title: phrase.title,
