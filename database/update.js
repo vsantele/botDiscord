@@ -10,8 +10,9 @@ function update(dbName, id, update, ) {
         if (err) return reject(err);
         return resolve(true)
       })
+    } else {
+      reject(new Error("Unknown database"))
     }
-    reject(new Error("Unknown database"))
     })
 }
 

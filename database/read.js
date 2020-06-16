@@ -1,4 +1,5 @@
 const db = require('./db');
+const exist = require('./exist')
 
 function all(dbName, options = {title: 1}) {
   return new Promise((resolve, reject) => {
@@ -8,22 +9,22 @@ function all(dbName, options = {title: 1}) {
         if (err) return reject(err);
         return resolve(docs)
       })
+    } else {
+      reject(new Error("Unknown database"))
     }
-    reject(new Error("Unknown database"))
   })
 }
 
-function search(dbName, value) {
+function search(dbName, query) {
    return new Promise((resolve, reject) => {
      if (exist(dbName)) {
-       db[dbName].find({}).findOne({
-         keywords: value
-       }, (err, docs) => {
+       db[dbName].findOne(query, (err, docs) => {
          if (err) return reject(err);
          return resolve(docs)
        })
+     } else {
+       reject(new Error("Unknown database"))
      }
-     reject(new Error("Unknown database"))
    })
 }
 

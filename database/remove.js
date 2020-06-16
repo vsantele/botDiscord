@@ -1,27 +1,17 @@
 const db = require('./db')
+const exist = require('./exist')
 
 function remove(dbName, id) {
   return new Promise((resolve, reject) => {
-    
-    switch (dbName) {
-      case "nounours":
-        db.nounours.remove({
-          _id: id
-        }, {}, (err) => {
-          if (err) return reject(err);
-          return resolve(true)
-        })
-      case "expressions":
-        db.expressions.delete({
-          _id: id
-        }, {}, (err) => {
-          if (err) return reject(err);
-          return resolve(true)
-        })
-      case "servers":
-        reject(new Error("not implemented yet"))
-      default:
-        reject(new Error("Unknown database"))
+    if (exist(dbName)) {
+      db[dbName].remove({
+        _id: id
+      }, {}, (err) => {
+        if (err) return reject(err);
+        return resolve(true)
+      })
+    } else {
+      reject(new Error("Unknown database"))
     }
   })
 }
