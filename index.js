@@ -86,7 +86,7 @@ client.on('message', async message => {
     await command.execute(message, args, {audio: audioQueue, client: client})
   } catch (err) {
     console.error(err)
-    message.reply(`Il y a eu une erreur avec la commande \`${command.name}\``)
+    message.reply(`Il y a eu une erreur avec la commande \`${command.name}\`\n ${err ? err.message : ''}`)
   }
 });
 
