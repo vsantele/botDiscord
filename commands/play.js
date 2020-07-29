@@ -4,6 +4,7 @@ const search = require('../modules/audio/search').youtube
 module.exports = {
   name: 'play',
   description: 'lance une vidéo youtube dans le bot',
+  args: true,
   async execute(message, args, options) {
     try {
       const {audio} = options

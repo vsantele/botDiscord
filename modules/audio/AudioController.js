@@ -144,6 +144,14 @@ class AudioController {
     })
     return result
   }
+  length() {
+    return this.queue.songs.length
+  }
+  remove(index) {
+    if (index === 0) throw new Error('Vous ne pouvez pas supprimer le premier son, utilisez `!skip` à la place')
+    if (index >= this.queue.songs.length) throw new Error(`Numéro invalide`)
+    this.queue.songs.splice(index, 1)
+  }
   changeQueue(queue) {
     if (queue[0].src === this.queue.songs[0].src) {
       this.queue.songs = queue;
