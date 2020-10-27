@@ -20,8 +20,8 @@ module.exports = {
       }
       const songInfo = await ytdl.getInfo(url);
       const song = {
-        title: songInfo.title,
-        src: songInfo.video_url,
+        title: songInfo.videoDetails.title,
+        src: songInfo.videoDetails.video_url,
         type: 'youtube'
       };
       // audio.execute(message, { title: 'Rick Roll', src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', type: 'youtube'})
