@@ -24,7 +24,8 @@ function detectLang(text) {
       lang = 'fr-fr'
 
   }
-  return lang;
+  return 'es-es'
+  // return lang;
 }
 
 module.exports = detectLang

@@ -22,8 +22,8 @@ class AudioController {
     this.event = event
   }
 
-  async execute(message, song) {
-    const voiceChannel = message.member.voice.channel
+  async execute(message, song, channel) {
+    const voiceChannel = channel || message.member.voice.channel
     if (!voiceChannel) return message.channel.send('Vous devez être dans un channel vocal pour diffuser quelque chose!');
     const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
@@ -47,7 +47,7 @@ class AudioController {
       }
     } else {
       this.queue.songs.push(song);
-      console.log(this.queue.songs);
+      // console.log(this.queue.songs);
       return message.channel.send(`${song.title} a été ajouté à la file d'attente!`);
     }
   }
@@ -69,7 +69,7 @@ class AudioController {
       if (!song) {
         if (!this.rec) {
           this.queue.voiceChannel.leave();
-          this.event.emit('delete', this.guildID)
+          // this.event.emit('delete', this.guildID)
         }
         return;
       }
@@ -97,7 +97,7 @@ class AudioController {
           break;
         case "stream":
           dispatcher = this.queue.connection.play(song.src)
-          dispatcher.setVolumeLogarithmic(this.queue.volume);
+          dispatcher.setVolumeLogarithmic(this.queue.volume*1.75);
           break;
         case "silence":
           dispatcher = this.queue.connection.play(song.src, { type: 'opus' })

@@ -366,14 +366,6 @@ axios-cookiejar-support@^1.0.0:
     is-redirect "^1.0.0"
     pify "^5.0.0"
 
-axios@^0.18.1:
-  version "0.18.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.1.tgz#ff3f0de2e7b5d180e757ad98000f1081b87bcea3"
-  integrity sha512-0BfJq4NSfQXd+SkFdrvFbG7addhYSBA2mQwISr46pD6E5iqkWg02RAs8vyTT/j0RTnoYmeXauBuSv1qKwR179g==
-  dependencies:
-    follow-redirects "1.5.10"
-    is-buffer "^2.0.2"
-
 axios@^0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
@@ -622,10 +614,10 @@ combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
-  integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
+commander@^6.1.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.0.tgz#b990bfb8ac030aedc6d11bc04d1488ffef56db75"
+  integrity sha512-zP4jEKbe8SHzKJYQmq8Y9gYjtO/POJLgIdKgV7B9qNmABVFVc+ctqSX6iXh4mCpJfRBOabiZ2YKPg8ciDw6C+Q==
 
 component-emitter@^1.3.0:
   version "1.3.0"
@@ -708,13 +700,6 @@ debug@4, debug@^4.1.1:
   dependencies:
     ms "^2.1.1"
 
-debug@=3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
-  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-  dependencies:
-    ms "2.0.0"
-
 debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
@@ -734,10 +719,10 @@ deep-extend@^0.6.0:
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deepspeech@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/deepspeech/-/deepspeech-0.9.1.tgz#c9fd96c9a94506db54fb88ba78d5ed179498c605"
-  integrity sha512-bAgqj4Ce5qTRtm0E1PqsjfJKSD7DaKm5m1JZMktBLx8/nqFYm1vE8KAWMC/Z5qvrZL2JPbrNNFWL8RPtkFKoag==
+deepspeech@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/deepspeech/-/deepspeech-0.9.3.tgz#675917addc2e2a16fb2bc03718d6a4e6b1bbf650"
+  integrity sha512-80yqUWEWgzclY9pjukpq0TdkQEbJ6NzqZ899vsLZfa4YcK35uOWIf+ILK55zQ+Ii/TEJ6Eo62Vc2saedQ/AK6w==
   dependencies:
     argparse "1.0.x"
     memory-stream "1.0.x"
@@ -775,10 +760,10 @@ diff@^3.5.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
 
-discord.js@^12.4.1:
-  version "12.4.1"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.4.1.tgz#be88bb32caa9e41eae67749a4e2387585745ac3b"
-  integrity sha512-KxOB8LOAN3GmrvkD6a6Fr1nlfArIFZ+q7Uqg4T/5duB90GZy9a0/Py2E+Y+eHKP6ZUCR2mbNMLCcHGjahiaNqA==
+discord.js@^12.5.1:
+  version "12.5.1"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.5.1.tgz#992b45753e3815526a279914ccc281d3496f5990"
+  integrity sha512-VwZkVaUAIOB9mKdca0I5MefPMTQJTNg0qdgi1huF3iwsFwJ0L5s/Y69AQe+iPmjuV6j9rtKoG0Ta0n9vgEIL6w==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     "@discordjs/form-data" "^3.0.1"
@@ -1026,13 +1011,6 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
-follow-redirects@1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
-  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
-  dependencies:
-    debug "=3.1.0"
-
 follow-redirects@^1.10.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
@@ -1165,10 +1143,10 @@ gcp-metadata@^4.2.0:
     gaxios "^4.0.0"
     json-bigint "^1.0.0"
 
-genius-lyrics@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-4.0.0.tgz#16dd711bfce2f94ae27987e69e4cd964916fe23b"
-  integrity sha512-ylAdZIg3WBodDCaHcu270MkDo4C/77ldRoJPS8QTsK+OMgRpH36xnICjvicy9WbQU2VLMQmzbEGv39p6oXYJCw==
+genius-lyrics@^4.1.4:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-4.1.4.tgz#6e4fb71f94039d703f61ed1e7d2fd9f6956ce1a6"
+  integrity sha512-bt0uRY4RG3HOcls1FEZrOWiXg4uxROQx55pUDlNmRvK7c6sovCtGt+7fawiQbA642Qe4YHChE6MCSfsKAHQ1YA==
   dependencies:
     axios "^0.20.0"
     node-html-parser "^1.2.20"
@@ -1255,18 +1233,18 @@ googleapis-common@^4.4.1:
     url-template "^2.0.8"
     uuid "^8.0.0"
 
-googleapis@^64.0.0:
-  version "64.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-64.0.0.tgz#af40364d27f2245049aaa2506847148d1815c61c"
-  integrity sha512-o8m4aRVv/LdvTVMgH4tLNeQvJZrXaa+62L9wPaKg6nHlCN3dBCKWWQKOklCwtg18xpWY4/vdNuTPHb/9Lnd00A==
+googleapis@^66.0.0:
+  version "66.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-66.0.0.tgz#008062d06b13954bd3a0425c17e8f8396e884957"
+  integrity sha512-jdEleRoyo/AeJZjKGC7Z2mHgochn2vR2JKqey6kydRkIBmCZxoQKLisRR4H8CRYZeEd6+c8Ns/LzS1S7qUjoFw==
   dependencies:
     google-auth-library "^6.0.0"
     googleapis-common "^4.4.1"
 
-got@^11.8.0:
-  version "11.8.0"
-  resolved "https://registry.yarnpkg.com/got/-/got-11.8.0.tgz#be0920c3586b07fd94add3b5b27cb28f49e6545f"
-  integrity sha512-k9noyoIIY9EejuhaBNLyZ31D5328LeqnyPNXJQb2XlJZcKakLqN5m6O/ikhq/0lw56kUYS54fVm+D1x57YC9oQ==
+got@^11.8.1:
+  version "11.8.1"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.1.tgz#df04adfaf2e782babb3daabc79139feec2f7e85d"
+  integrity sha512-9aYdZL+6nHmvJwHALLwKSUZ0hMwGaJGYv3hoPLPgnT8BoBXm1SjnZeky+91tfwJaDzun2s4RsBRy48IEYv2q2Q==
   dependencies:
     "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
@@ -1400,16 +1378,16 @@ https-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
-ibm-cloud-sdk-core@2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/ibm-cloud-sdk-core/-/ibm-cloud-sdk-core-2.4.4.tgz#3fc983cb45c434ff54b62043b752dc4b3c92aecc"
-  integrity sha512-CxiNtXlzOmY1nO+qB1dQs70oIch94yPAnd8Eg/hD59/Ak5nmt6uWbWrVS9YpRBgBWR9Xh9n/UgIbhRmx10+8pw==
+ibm-cloud-sdk-core@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/ibm-cloud-sdk-core/-/ibm-cloud-sdk-core-2.7.0.tgz#6ee2b554e42b4f2c7b7e7dba4a4205052d214925"
+  integrity sha512-VGrfoERyLmv+5NcQdz3xuvFwXauNiHwJiJiuo2ccUn0+kI4rg7c/QRgS2Pcou0cZQaVRhJh3db4FYA2pDrthKA==
   dependencies:
     "@types/file-type" "~5.2.1"
     "@types/isstream" "^0.1.0"
     "@types/node" "~10.14.19"
     "@types/tough-cookie" "^4.0.0"
-    axios "^0.18.1"
+    axios "^0.20.0"
     axios-cookiejar-support "^1.0.0"
     camelcase "^5.3.1"
     debug "^4.1.1"
@@ -1427,10 +1405,10 @@ ibm-cloud-sdk-core@2.4.4:
     semver "^6.2.0"
     tough-cookie "^4.0.0"
 
-ibm-watson@^5.7.1:
-  version "5.7.1"
-  resolved "https://registry.yarnpkg.com/ibm-watson/-/ibm-watson-5.7.1.tgz#e8bc1461061f0a6544f6b70b774fdc691dd7dd7a"
-  integrity sha512-G9m3aZ+N2r/pAPoVo8XQ+hyjoEMnhkKPnKgCF1oLuXUf648Mzq+qE53FKBxKsoNr9L7V8qGHiZt6rkoRpocgqQ==
+ibm-watson@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ibm-watson/-/ibm-watson-6.0.0.tgz#6ffe8b008ac4f69de13584dac91c19b255a342fe"
+  integrity sha512-jycUmtCBaRXtE2x9q5jtPGVM0VifO3fRJ8weXiZSDVX4jYzvld6AKKqfzDhmWWEFiJ8VTfzllUBE6BA7agUI3Q==
   dependencies:
     "@types/async" "^3.2.1"
     "@types/extend" "^3.0.1"
@@ -1440,7 +1418,7 @@ ibm-watson@^5.7.1:
     async "^3.2.0"
     camelcase "^6.0.0"
     extend "~3.0.2"
-    ibm-cloud-sdk-core "2.4.4"
+    ibm-cloud-sdk-core "^2.7.0"
     isstream "~0.1.2"
     websocket "^1.0.28"
 
@@ -1480,11 +1458,6 @@ ini@~1.3.0:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
-
-is-buffer@^2.0.2:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-2.0.4.tgz#3e572f23c8411a5cfd9557c849e3665e0b290623"
-  integrity sha512-Kq1rokWXOPXWuaMAqZiJW4XxsmD9zGx9q4aePabbn3qCRGedtH7Cm+zV8WETitMfu1wdh+Rvd6w5egwSngUX2A==
 
 is-extendable@^1.0.0:
   version "1.0.1"
@@ -1823,6 +1796,14 @@ m3u8stream@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/m3u8stream/-/m3u8stream-0.8.2.tgz#dacbe291a9a35140d81f24820a54abf172c4ee9f"
   integrity sha512-UxOH/35QF12fnqdP8pQ3CJ2SLpjSl32DSSnC0kLdqUBkVgwvWfMIY1X816KC4Ulyzf/tZy8OYijqvdTQMiKurg==
+  dependencies:
+    miniget "^4.0.0"
+    sax "^1.2.4"
+
+m3u8stream@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/m3u8stream/-/m3u8stream-0.8.3.tgz#c4624e92b4240eb356d040c4a5e155586cf58108"
+  integrity sha512-0nAcdrF8YJKUkb6PzWdvGftTPyCVWgoiot1AkNVbPKTeIGsWs6DrOjifrJ0Zi8WQfQmD2SuVCjkYIOip12igng==
   dependencies:
     miniget "^4.0.0"
     sax "^1.2.4"
@@ -2585,10 +2566,10 @@ stream-parser@^0.3.1:
   dependencies:
     debug "2"
 
-streamspeed@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/streamspeed/-/streamspeed-2.0.0.tgz#de4b79316775c2d9cdf3d863b3b5a1020d3e930b"
-  integrity sha512-RFsqRckd50tB2TOBLE3FGohvoxdOxKk7AuePNCKkoN/I3nXh44EQ4KTFHh0EEoXErcmzlgjw3Z0v9uY7MCEu1A==
+streamspeed@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/streamspeed/-/streamspeed-2.0.1.tgz#7721c438d19cd9f9eb7e1ba3efa14f0222215bff"
+  integrity sha512-j6pFynhO0nZ+1zhyTDqLLlIxM0IyCdLKMj1EUJznDA87xLE/JWSwEg3FlJWERDB72KYt5OD29ZUWxxVkMTnqWg==
 
 string-width@^1.0.1:
   version "1.0.2"
@@ -2966,16 +2947,6 @@ ytdl-core-discord@^1.2.4:
     prism-media "^1.2.2"
     ytdl-core "^3.4.2"
 
-ytdl-core@^3.2.0:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-3.2.2.tgz#056eae00209410734f11046f8d7947d7e39514bf"
-  integrity sha512-DVE7uhk4WYB2Op742QQVGE/b9G7cr9kSB3ZDpDXmyRPhO55h9u8gwORlDIHWKucWVmCsdsdKzNP89QylpJEgiw==
-  dependencies:
-    html-entities "^1.3.1"
-    m3u8stream "^0.7.1"
-    miniget "^2.0.1"
-    sax "^1.1.3"
-
 ytdl-core@^3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-3.4.2.tgz#0d3d35f54d4f6b1de870b987f3d45e88c64b6a6c"
@@ -2996,20 +2967,30 @@ ytdl-core@^4.1.0:
     miniget "^4.0.0"
     sax "^1.1.3"
 
-ytdl@^1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/ytdl/-/ytdl-1.3.5.tgz#ceca38264b82d8a1507ca65096c69629c8daabae"
-  integrity sha512-1wn5b6R7JJxwzNLLvgc0ptBdSgPLr7nB++i5r3T6ApoZMy/X/sD5QlzkHAeYqjzeGxIK0koOsCddRsADDQ9H4Q==
+ytdl-core@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-4.1.5.tgz#9defeabbb2a8f0250c989bf1a6999155dfc55a0c"
+  integrity sha512-3MSGIFg3jBWuYZthumSZh69pLwC8/0Wz4Ov+Q6StsGsGcbwBN0OGtz3XvtlYS5YWLrxLeIs/FRBMXrgeEOSA+w==
+  dependencies:
+    html-entities "^1.3.1"
+    m3u8stream "^0.8.3"
+    miniget "^4.0.0"
+    sax "^1.1.3"
+
+ytdl@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/ytdl/-/ytdl-1.4.1.tgz#6832dba26017499c008972fd54f99e746dec8dd8"
+  integrity sha512-YJS9zRRS7Goq3yBx4jt6pk1w0CPjAaTzYX49/BEDtP4aSsF92cQTkDdA6893AjS0adEvpH79gvXUOx6K959sBw==
   dependencies:
     chalk "^4.0.0"
     cli-progress "^3.8.2"
-    commander "^5.1.0"
+    commander "^6.1.0"
     homedir "^0.6.0"
     list-it "^1.3.3"
     lodash.throttle "^4.1.1"
     sanitize-filename "^1.6.3"
-    streamspeed "^2.0.0"
-    ytdl-core "^3.2.0"
+    streamspeed "^2.0.1"
+    ytdl-core "^4.1.0"
 
 zlib-sync@^0.1.7:
   version "0.1.7"
