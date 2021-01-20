@@ -16,7 +16,6 @@ function getWord(word) {
         if ($('section.corrector > p').is('.err')) {
           reject('Error, mot inconnu')
         } else if ($('section').is('section.corrector')) {
-          console.log($('.corrector > ul').children().first().text())
           resolve(getWord($('.corrector > ul').children().first().text()))
         } else {
           let definitions = []
