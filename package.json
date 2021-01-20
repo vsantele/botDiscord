@@ -1,6 +1,6 @@
 {
   "name": "botdiscord",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "bot pour tester la creation de bot sur discord",
   "main": "index.js",
   "author": "WolfVic",
@@ -18,7 +18,7 @@
     "dotenv": "^8.2.0",
     "erlpack": "discordapp/erlpack",
     "ffmpeg": "^0.0.4",
-    "genius-lyrics": "^4.1.4",
+    "genius-lyrics": "^4.2.0",
     "got": "^11.8.1",
     "https-proxy-agent": "^5.0.0",
     "ibm-watson": "^6.0.2",
@@ -35,7 +35,7 @@
     "wav": "^1.0.2",
     "wikiquote": "^0.5.0",
     "youtube-api-v3-search": "^1.2.1",
-    "ytdl-core": "^4.4.3",
+    "ytdl-core": "^4.4.4",
     "zlib-sync": "^0.1.7"
   }
 }
