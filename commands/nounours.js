@@ -12,7 +12,7 @@ module.exports = {
       let res = `Listes des phrases disponibles:\n `
       phrases.forEach(phrase => {
         res += ` - **${phrase.title}**: mots clés: [`
-        phrase.keywords.forEach(keyword => res += `**${keyword}**, `)
+        res += phrase.keywords.map(keyword => `**${keyword}**`).join(', ')
         res += `]\n`
       })
       message.channel.send(res)
