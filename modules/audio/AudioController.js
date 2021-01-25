@@ -35,16 +35,12 @@ class AudioController {
     if (!this.queue.songs.length) {  
       this.queue.songs.push(song);
   
-      try {
-        // console.log("queue:",queueContruct.songs[0])
-        var connection = await voiceChannel.join();
-        // console.log('connection :', connection);
-        this.queue.connection = connection;
-        this.play(this.queue.songs[0]);
-        return
-      } catch (err) {
-        throw new Error(err.message)
-      }
+      // console.log("queue:",queueContruct.songs[0])
+      var connection = await voiceChannel.join();
+      // console.log('connection :', connection);
+      this.queue.connection = connection;
+      this.play(this.queue.songs[0]);
+
     } else {
       this.queue.songs.push(song);
       // console.log(this.queue.songs);
@@ -89,7 +85,7 @@ class AudioController {
               type: "ogg/opus"
             }
           );
-          dispatcher.setVolumeLogarithmic(1)
+          dispatcher.setVolumeLogarithmic(this.queue.volume * 1.5)
           break;
         case "broadcast":
           dispatcher = this.queue.connection.play(song.src)
@@ -111,6 +107,7 @@ class AudioController {
         })
         .on("error", error => {
           console.error(error);
+          this.queue.textChannel.send(`Une erreur est survenue lors de la lecture...`)
         });
       
       if (this.queue.songs[0].type === "file " || this.queue.songs[0].type === "youtube") {
@@ -123,23 +120,23 @@ class AudioController {
     
   }
   volume(vol) {
-    vol /= 100
+    vol = Math.min(5, Math.max(0,vol)) / 100
     this.queue.volume = vol
-    if (this.queue.connection) this.queue.connection.dispatcher.setVolumeLogarithmic(Math.min(2, Math.max(0,vol)))
+    if (this.queue.connection) this.queue.connection.dispatcher.setVolumeLogarithmic(vol)
   }
   pause() {
-    if (this.queue.connection && this.queue.connection.dispatcher) {
-      if (this.queue.connection.dispatcher.paused) this.queue.connection.dispatcher.resume()
-      else this.queue.connection.dispatcher.pause(true)
-    }
+    
+    if (this.queue.connection?.dispatcher?.paused) this.queue.connection.dispatcher?.resume()
+    else this.queue.connection?.dispatcher?.pause(true)
+
   }
   resume() {
-    if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.resume()
+    this.queue.connection?.dispatcher?.resume()
   }
   getQueue() {
-    let result = `Prochaines musiques à jouer:\n`
+    let result = `**Sons dans la file d'attente**:\n`
     this.queue.songs.forEach((song, index) => {
-      if (index === 0) return
+      if (index === 0) result +=  `[EN COURS] "${song.title}"\n`
       result += `${index}. "${song.title}"\n`
     })
     return result
