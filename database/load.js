@@ -21,12 +21,6 @@ function load() {
       autoload: true
     })
   }
-  if (!db.gayPasses) {
-    db.gayPasses = new Datastore({
-      filename: path.join(__dirname, './db/gayPasses.db'),
-      autoload: true
-    })
-  }
   console.log("Databases loaded")
   return db;
 }
