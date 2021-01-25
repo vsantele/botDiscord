@@ -957,10 +957,10 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-genius-lyrics@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-4.2.0.tgz#bc38d38c1e5ceb372246da7b6a602dba49b243f3"
-  integrity sha512-fPBxSADKKe12kTT4UMRYtYAg1/pPDh5v4WxaMpgIJgWO9yayxkXsVaWxVO1xNFaPwyB0eElNgt2WQCVfKyTp+A==
+genius-lyrics@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/genius-lyrics/-/genius-lyrics-4.2.1.tgz#4ab545731d056668d2403c4dfb6893d5b98a1723"
+  integrity sha512-C3gj2glmX7+SLJ/GnKeVU+Ls5cvwlBxoqqsXJ7Hgxp/XFPhImTTMhU3+kpHS7V1WwekQXNntm6IqyzaBNyB8FA==
   dependencies:
     axios "^0.21.1"
     node-html-parser "^1.4.9"
@@ -2359,10 +2359,10 @@ youtube-api-v3-search@^1.2.1:
   dependencies:
     browser-resolve "^1.11.3"
 
-ytdl-core@^4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-4.4.4.tgz#d7635dc4ea95965b52589bd3adc6b28368daae22"
-  integrity sha512-/IFJTM5RjN20q6RVaE/9rv9tKoBtx95lKZCI/pUPDiDzu9fXyuPbkVzEQJmsYEwzi0zdv4d6iJy0gHWz49o6mw==
+ytdl-core@^4.4.5:
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-4.4.5.tgz#761a6792f83e0fd2f2605874ea4c3d51ab717aab"
+  integrity sha512-/ugilIF2PskxNfQgkYZ/esvkp+fiB/mOPdIExW/En+1QTbq5VeTVqgf2hETTen0Co2lHMM4eRxPaczDHTmkb7A==
   dependencies:
     m3u8stream "^0.8.3"
     miniget "^4.0.0"
