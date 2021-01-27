@@ -1,6 +1,6 @@
 {
   "name": "botdiscord",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "bot pour tester la creation de bot sur discord",
   "main": "index.js",
   "author": "WolfVic",
@@ -10,7 +10,7 @@
     "dev": "nodemon ./index.js"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.4.0",
     "bufferutil": "^4.0.3",
     "cheerio": "1.0.0-rc.5",
     "deepspeech": "^0.9.3",
