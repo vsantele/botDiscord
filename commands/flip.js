@@ -7,9 +7,14 @@ module.exports = {
   usage: '',
   async execute(message, args) {
     try {
-      const res = await random([0, 2, 1]);
-      
-      message.channel.send(res == 0 ? "Pile" : "Face", {split: true})
+      const res = await random([1, 1000, 1]);
+      if (res < 500) {
+        message.channel.send('Pile')
+      } else if (res > 500) {
+        message.channel.send('Face')
+      } else {
+        message.channel.send('Coté')
+      }
     } catch (e) {
       console.error('e :', e);
       message.channel.send(`Il y a eu une erreur..., on va dire que c'est pile`)
