@@ -1,6 +1,6 @@
 {
   "name": "botdiscord",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "bot pour tester la creation de bot sur discord",
   "main": "index.js",
   "author": "WolfVic",

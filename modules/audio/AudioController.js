@@ -120,7 +120,7 @@ class AudioController {
     
   }
   volume(vol) {
-    vol = Math.min(5, Math.max(0,vol)) / 100
+    vol = Math.min(5, Math.max(0,vol/ 100)) 
     this.queue.volume = vol
     if (this.queue.connection) this.queue.connection.dispatcher.setVolumeLogarithmic(vol)
   }
