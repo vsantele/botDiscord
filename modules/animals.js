@@ -1,4 +1,3 @@
-const request = require('request');
 require('dotenv').config();
 
 var chien = function (callback) {
