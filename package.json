@@ -1,6 +1,6 @@
 {
   "name": "botdiscord",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "bot pour tester la creation de bot sur discord",
   "main": "index.js",
   "author": "WolfVic",
@@ -24,7 +24,7 @@
     "ibm-watson": "^6.0.2",
     "languagedetect": "^2.0.0",
     "nedb": "^1.8.0",
-    "prism-media": "^1.2.3",
+    "prism-media": "^1.2.5",
     "random-org": "^2.1.0",
     "readline": "^1.3.0",
     "request": "^2.88.2",
