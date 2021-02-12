@@ -51,22 +51,18 @@ class AudioController {
   skip(message) {
     if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
     if (!this.queue) return message.channel.send(`Il n'y a rien à passer!`);
-    if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
+    if (this.queue?.connection?.dispatcher) this.queue.connection.dispatcher.end();
   }
   stop(message) {
     if (!message.member.voice.channel) return message.channel.send('Vous devez être dans un channel vocal!');
     this.queue.songs = [];
-    if (!this.rec) {
-      if (this.queue.connection && this.queue.connection.dispatcher) this.queue.connection.dispatcher.end();
-    }
+    if (this?.queue?.connection?.dispatcher) this.queue.connection.dispatcher.end();
   }
   play(song) {
     try {
       if (!song) {
-        if (!this.rec) {
-          this.queue.voiceChannel.leave();
-          // this.event.emit('delete', this.guildID)
-        }
+        this.queue.voiceChannel.leave();
+        // this.event.emit('delete', this.guildID)
         return;
       }
       console.log(song);
@@ -98,6 +94,8 @@ class AudioController {
         case "silence":
           dispatcher = this.queue.connection.play(song.src, { type: 'opus' })
           dispatcher.setVolumeLogarithmic(this.queue.volume);
+        default:
+          throw new Error("Unknown type")
       }
       dispatcher
         .on("finish", () => {
@@ -106,8 +104,7 @@ class AudioController {
           this.play(this.queue.songs[0]);
         })
         .on("error", error => {
-          console.error(error);
-          this.queue.textChannel.send(`Une erreur est survenue lors de la lecture...`)
+          throw error
         });
       
       if (this.queue.songs[0].type === "file " || this.queue.songs[0].type === "youtube") {
@@ -126,19 +123,26 @@ class AudioController {
   }
   pause() {
     
-    if (this.queue.connection?.dispatcher?.paused) this.queue.connection.dispatcher?.resume()
-    else this.queue.connection?.dispatcher?.pause(true)
+    if (this.queue.connection?.dispatcher?.paused)
+      this.resume()
+    else
+      this.queue.connection?.dispatcher?.pause(true)
 
   }
   resume() {
     this.queue.connection?.dispatcher?.resume()
   }
   getQueue() {
-    let result = `**Sons dans la file d'attente**:\n`
-    this.queue.songs.forEach((song, index) => {
-      if (index === 0) result +=  `[EN COURS] "${song.title}"\n`
-      result += `${index}. "${song.title}"\n`
-    })
+    let result = ''
+    if (this.length() == 0) { 
+      result = "**Aucun son dans la file d'attendre.**\nTu peux en ajouter avec `!play [url|nom]`"
+    } else {
+      result = `**Sons dans la file d'attente**:\n`
+      this.queue.songs.forEach((song, index) => {
+        if (index === 0) result +=  `[EN COURS] "${song.title}"\n`
+        else result += `${index}. "${song.title}"\n`
+      })
+    }
     return result
   }
   length() {
