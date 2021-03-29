@@ -4,7 +4,7 @@ module.exports = {
   name: 'help',
   description: 'Liste de toutes les commandes ou les infos pour une commande spécifique',
   aliases: ['commandes'],
-  usage: '[command name',
+  usage: '[command name]',
   cooldown: 5,
   execute(message, args) {
     const data = []
