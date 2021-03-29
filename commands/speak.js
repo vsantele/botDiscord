@@ -10,7 +10,10 @@ module.exports = {
     try {
       const { audio } = options
       const text = args.join(' ')
-      const src = await speak(text, detectLang(text))
+      const lang = detectLang(text)
+      console.log(lang)
+      message.channel.send(lang)
+      const src = await speak(text, lang)
       const song = {
         title: "",
         src: src,
