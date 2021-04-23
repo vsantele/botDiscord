@@ -34,12 +34,17 @@ class AudioController {
   
     if (!this.queue.songs.length) {  
       this.queue.songs.push(song);
-  
-      // console.log("queue:",queueContruct.songs[0])
-      var connection = await voiceChannel.join();
-      // console.log('connection :', connection);
-      this.queue.connection = connection;
-      this.play(this.queue.songs[0]);
+      try {
+
+        // console.log("queue:",queueContruct.songs[0])
+        var connection = await voiceChannel.join();
+        // console.log('connection :', connection);
+        this.queue.connection = connection;
+        this.play(this.queue.songs[0]);
+      } catch (e) {
+        console.error(e)
+        return message.channel.send(`Je n'arrive pas à me connecter...`);
+      }
 
     } else {
       this.queue.songs.push(song);

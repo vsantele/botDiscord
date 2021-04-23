@@ -14,7 +14,7 @@
     "bufferutil": "^4.0.3",
     "cheerio": "^1.0.0-rc.5",
     "deepspeech": "^0.9.3",
-    "discord.js": "^12.5.1",
+    "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "erlpack": "discordapp/erlpack",
     "ffmpeg": "^0.0.4",
