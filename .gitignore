@@ -54,6 +54,15 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
 # dotenv environment variables file
 .env
 
@@ -74,3 +83,4 @@ recordings/
 test.raw
 
 *.db
+
