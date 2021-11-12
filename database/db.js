@@ -1,4 +1,4 @@
 const db = {}
-db.names = [];
+db.names = []
 
 module.export = db

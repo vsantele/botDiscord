@@ -1,27 +1,29 @@
 const fs = require("fs")
-const Discord = require('discord.js');
-const { prefix } = require('./config.json')
-const AudioController = require('./modules/audio/AudioController.js')
-const events = require('events')
+const Discord = require("discord.js")
+const { prefix } = require("./config.json")
+const AudioController = require("./modules/audio/AudioController.js")
+const events = require("events")
 
-const Database = require('./database')
+const Database = require("./database")
 
 const path = require("path")
 
 const audioEvents = new events.EventEmitter()
 
-const client = new Discord.Client();
+const client = new Discord.Client()
 client.commands = new Discord.Collection()
-const commandFiles = fs.readdirSync(path.join(__dirname, "commands")).filter(file => file.endsWith('.js'))
+const commandFiles = fs
+  .readdirSync(path.join(__dirname, "commands"))
+  .filter((file) => file.endsWith(".js"))
 
-for(const file of commandFiles) {
+for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
   client.commands.set(command.name, command)
 }
 
-require('dotenv').config();
+require("dotenv").config()
 
-const token = process.env.TOKEN_DISCORD;
+const token = process.env.TOKEN_DISCORD
 
 const audios = new Discord.Collection()
 
@@ -29,20 +31,23 @@ const cooldowns = new Discord.Collection()
 
 Database.load()
 
-client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`)
+})
 //   const channel = client.channels.get('471729962060087297')
 //   const channel = client.guilds.channels.find(chan => chan.name === 'général')
 //   channel.send('Hello World')
-client.on('message', async message => {
+client.on("message", async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return
 
   const args = message.content.slice(prefix.length).split(/ +/)
   const commandName = args.shift().toLowerCase()
 
-  
-  const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+    )
 
   if (!command) return
 
@@ -55,7 +60,9 @@ client.on('message', async message => {
   }
 
   if (command.users && !command.users.includes(message.author.id)) {
-    return message.reply(`Tu n'as pas le droit d'utiliser la commande \`${command.name}\`!`)
+    return message.reply(
+      `Tu n'as pas le droit d'utiliser la commande \`${command.name}\`!`
+    )
   }
 
   if (!audios.has(message.guild.id)) {
@@ -69,13 +76,17 @@ client.on('message', async message => {
 
   const now = Date.now()
   const timestamps = cooldowns.get(command.name)
-  const cooldownAmount = (command.cooldown || 3) * 1000;
+  const cooldownAmount = (command.cooldown || 3) * 1000
 
-  if (timestamps.has(message.author.id)) { 
+  if (timestamps.has(message.author.id)) {
     const expirationTime = timestamps.get(message.author.id) + cooldownAmount
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000
-      return message.reply(`Tu dois attendre encore ${timeLeft.toFixed(1)} secondes avant de réutiliser la commande \`${command.name}\``)
+      return message.reply(
+        `Tu dois attendre encore ${timeLeft.toFixed(
+          1
+        )} secondes avant de réutiliser la commande \`${command.name}\``
+      )
     }
   }
 
@@ -83,12 +94,16 @@ client.on('message', async message => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
 
   try {
-    await command.execute(message, args, {audio: audioQueue, client: client})
+    await command.execute(message, args, { audio: audioQueue, client: client })
   } catch (err) {
     console.error(err)
-    message.reply(`Il y a eu une erreur avec la commande \`${command.name}\`\n ${err ? err.message : ''}`)
+    message.reply(
+      `Il y a eu une erreur avec la commande \`${command.name}\`\n ${
+        err ? err.message : ""
+      }`
+    )
   }
-});
+})
 
 function deleteAudioController(guildId) {
   if (audios.has(guildId)) {
@@ -97,6 +112,6 @@ function deleteAudioController(guildId) {
   }
 }
 
-audioEvents.on('delete', deleteAudioController)
+audioEvents.on("delete", deleteAudioController)
 
-client.login(token);
+client.login(token)

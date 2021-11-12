@@ -1,9 +1,9 @@
-const darksky = require('../modules/weather.js').darksky
+const darksky = require("../modules/weather.js").darksky
 
 module.exports = {
   name: "météo",
-  aliases: ['meteo', 'weather'],
-  description: 'Donne la météo à Mouscron',
+  aliases: ["meteo", "weather"],
+  description: "Donne la météo à Mouscron",
   cooldown: 60,
   async execute(message, args) {
     try {
@@ -14,5 +14,5 @@ module.exports = {
       console.error(error)
       message.channel.send(`Il y a eu une erreur avec la commande ${this.name}`)
     }
-  }
+  },
 }

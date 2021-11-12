@@ -1,4 +1,4 @@
-const Readable = require('stream').Readable
+const Readable = require("stream").Readable
 
 function bufferToReadable(buffer) {
   const readable = new Readable()

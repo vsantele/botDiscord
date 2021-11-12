@@ -1,4 +1,4 @@
-const Message = require('./send.js').Message
+const Message = require("./send.js").Message
 
 class Guilds {
   constructor() {
@@ -14,5 +14,5 @@ class Guilds {
   }
 }
 module.exports = {
-  Guilds
+  Guilds,
 }

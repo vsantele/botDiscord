@@ -51,7 +51,6 @@
 
 // // file.pipe(reader).pipe(detector);
 
-
 // function rec(stream) {
 //   console.log(detector.sampleRate())
 //   console.log(detector.numChannels())
